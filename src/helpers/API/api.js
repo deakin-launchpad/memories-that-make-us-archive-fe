@@ -40,15 +40,15 @@ class API {
   }
 
   login = (data, callback) => {
-    axiosInstance.post('login', data).then(response => {
-      return performCallback(callback, true)
+    axiosInstance.post('admin/login', data).then(response => {
+      return callback(response.data.data.accessToken, true)
     }).catch(error => {
       errorHelper(error, "login")
     })
   }
 
   accessTokenLogin = (callback) => {
-    axiosInstance.post('accessTokenLogin', {}, {
+    axiosInstance.post('admin/accessTokenLogin', {}, {
       headers: {
         authorization: "Bearer " + AccessToken
       }
@@ -59,6 +59,42 @@ class API {
     logout();
     performCallback(callback);
   }
+
+  createNews = (data) => {
+    axiosInstance.post('/news/createNews', data, {
+      headers: {
+        authorization: 'Bearer ' + AccessToken
+      }
+    }).then(response => {
+      notify("News Created");
+    }).catch(error => {
+      errorHelper(error)
+    })
+  }
+
+  getNews = (data, callback) => {
+    axiosInstance.post('/news/getNews', data, {
+    }).then(response => {
+      console.log(response.data.data)
+      return callback(response.data.data.data)
+    }).catch(error => {
+      errorHelper(error)
+    })
+  }
+
+  uploadImage = (data, callback) => {
+    axiosInstance.post('/upload/uploadImage', data, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      }
+    }).then(response => {
+      console.log(response.data.data.imageFileURL.original)
+      return callback(response.data.data.imageFileURL.original)
+    }).catch(error => {
+      errorHelper(error)
+    })
+  }
+
 }
 const instance = new API();
 export default instance;
