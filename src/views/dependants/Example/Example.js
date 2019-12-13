@@ -1,92 +1,67 @@
 import React, { useState } from 'react';
-import { Grid, Typography, Button, Card, CardContent, CardActions, makeStyles } from '@material-ui/core';
-import { EnhancedEditor, EnhancedDrawer, EnhancedModal } from 'components';
-import { useLocation } from 'helpers';
+import { Grid, Typography, Button, Card, CardContent, CardActions, makeStyles, TextField, TextareaAutosize, IconButton } from '@material-ui/core';
+import PhotoCamera from '@material-ui/icons/PhotoCamera';
+import { EnhancedEditor } from 'components';
+import { API } from 'helpers/index';
 
 const useStyles = makeStyles(theme => ({
   root: {
     marginTop: theme.spacing(1),
     marginLeft: theme.spacing(1)
+  },
+  input: {
+    display: "none"
   }
 }))
 
 export const Example = () => {
+
+  const handleSubmission = (event) => {
+    let formData = new FormData();
+    formData.append('imageFile', event.target.files[0])
+    console.log(formData)
+    console.log(event.target.files)
+    API.uploadImage(formData, setImageURL);
+  }
+
+  const handlePublish = () => {
+    API.createNews({
+      title: title,
+      content: contentStorage,
+      category: category,
+      imageURL: imageURL,
+      link: link
+    })
+  }
   const classes = useStyles();
   const [contentStorage, setContentStorage] = useState('');
-  const [drawerContent] = useState(<p>Example Content</p>);
-  const [bottomDrawerStatus, setBottomDrawerStatus] = useState(false);
-  const [modalStatus, setModalStatus] = useState(false);
-  let [location] = useLocation();
+  const [imageURL, setImageURL] = useState('https://s3.au-syd.cloud-object-storage.appdomain.cloud/ipan-v2-bucket/image/profilePicture/original/Profile_p6ShcttnsmkW.png');
+  const [title, setTitle] = useState('');
+  const [category, setCategory] = useState('');
+  const [link, setLink] = useState('');
   let content = (
     <div className={classes.root}>
-      <Grid container spacing={1} justify='flex-start' alignItems='flex-start'>
-        <Grid item xs={5}>
-          <Card>
-            <CardContent>
-              <Typography gutterBottom variant="h5" component="h2">Text Editor Example</Typography>
-              <EnhancedEditor id={'textEditor'} getContent={(content) => setContentStorage(content)} />
-            </CardContent>
-            <CardActions>
-              <Button variant="outlined" onClick={() => console.log(contentStorage)}>Console Data</Button>
-            </CardActions>
-          </Card>
-        </Grid>
-        <Grid item xs={5}>
-          <Card>
-            <CardContent>
-              <Typography gutterBottom variant="h5" component="h2">
-                Bottom Drawer Example
-              </Typography>
-              <EnhancedDrawer
-                anchor={'bottom'}
-                title='Example Drawer'
-                content={drawerContent}
-                isOpen={bottomDrawerStatus}
-                onClose={() => { setBottomDrawerStatus(false); }} />
-            </CardContent>
-            <CardActions>
-              <Button variant='outlined' onClick={() => { bottomDrawerStatus ? setBottomDrawerStatus(false) : setBottomDrawerStatus(true); }} >
-                Toggle BottomDrawer
-              </Button>
-            </CardActions>
-          </Card>
-        </Grid>
-        <Grid item xs={5}>
-          <Card>
-            <CardContent>
-              <Typography gutterBottom variant="h5" component="h2">
-                Enhanced Modal Example
-              </Typography>
-              <EnhancedModal
-                dialogTitle='Example Modal'
-                dialogContent={drawerContent}
-                isOpen={modalStatus}
-                onSubmit={() => { setModalStatus(false); }}
-                onClose={() => { setModalStatus(false); }}
-                options={{
-                  swapButtonColors: false
-                }}
-              />
-            </CardContent>
-            <CardActions>
-              <Button variant='outlined' onClick={() => { modalStatus ? setModalStatus(false) : setModalStatus(true); }} >
-                Toggle Enhanced Modal
-              </Button>
-            </CardActions>
-          </Card>
-        </Grid><Grid item xs={5}>
-          <Card>
-            <CardContent>
-              <Typography gutterBottom variant="h5" component="h2">
-                useLocation Example
-              </Typography>
-            </CardContent>
-            <CardActions>
-              <Button variant='outlined' onClick={() => { console.log(location); }} >
-                Console Current Location
-              </Button>
-            </CardActions>
-          </Card>
+      <Grid container spacing={2} justify='flex-start' alignItems='flex-start'>
+        <Grid item xs={'auto'} xl={'auto'} lg={'auto'} md={'auto'} sm={'auto'}>
+          <TextField variant="outlined" label="Title" margin="normal" required fullWidth id="title" name="title" autoFocus onChange={(e) => setTitle(e.target.value)} />
+          <EnhancedEditor id={'textEditor'} getContent={(content) => setContentStorage(content)} />
+          <TextField variant="outlined" label="Category" margin="normal" required fullWidth name="Category" id="Category" onChange={(e) => setCategory(e.target.value)} />
+          <TextField variant="outlined" label="Link" margin="normal" fullWidth name="Link" id="Link" onChange={(e) => setLink(e.target.value)} />
+          <input
+            accept="image/*"
+            className={classes.input}
+            id="icon-button-file"
+            multiple
+            onChange={handleSubmission}
+            type="file"
+            className={classes.input}
+          />
+          <label htmlFor="icon-button-file">
+            <IconButton color="primary" aria-label="upload picture" component="span">
+              <PhotoCamera />
+            </IconButton>
+          </label>
+          <Button variant="contained" color="primary" onClick={handlePublish} className={classes.buttons} >Publish</Button>
         </Grid>
       </Grid>
     </div>);
