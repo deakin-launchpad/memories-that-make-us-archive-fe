@@ -1,5 +1,5 @@
 {
-  "visible": true,
+  "visible": false,
   "label": "God Mode",
   "bypassBackend": false,
   "verticlePosition": "top",

@@ -9,7 +9,7 @@ import { APIKeys } from 'configurations';
  * Use apiKeys from configurations to change apiKey
 */
 export const EnhancedEditor = (props) => {
-  const [_content, _setContent] = useState('');
+  const [_content, _setContent] = useState('Content*');
   const [editorID, setEditorID] = useState();
   const [menuBar, setMenuBar] = useState(true);
   const [height, setHeight] = useState(500);
@@ -48,7 +48,7 @@ export const EnhancedEditor = (props) => {
   }, [props]);
 
   let initObj = {
-    height, plugins, removed_menuitems, content_css, image_advtab: true, toolbar1, toolbar2,
+    height, plugins, removed_menuitems, content_css, image_advtab: true, toolbar1, 
     file_picker_types: 'file image media', images_reuse_filename: true,
     file_picker_callback: props.imageUpload === undefined ? null : (callback) => {
       var input = document.createElement('input');

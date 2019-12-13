@@ -7,7 +7,7 @@
       "type": "button",
       "icon": "home",
       "controller": "/home",
-      "customTitle": "Welcome to Boiler Plate",
+      "customTitle": "LPAD News",
       "isFavourite": true,
       "subMenuItems": []
     },
@@ -16,7 +16,7 @@
       "type": "button",
       "icon": "code",
       "controller": "/examples",
-      "customTitle": "Example Code File",
+      "customTitle": "Publish",
       "isFavourite": true,
       "subMenuItems": []
     },
@@ -25,7 +25,7 @@
       "type": "logout",
       "icon": "logout",
       "controller": "",
-      "customTitle": "Welcome to Boiler Plate",
+      "customTitle": "LPAD News",
       "isFavourite": false,
       "subMenuItems": []
     }
@@ -40,8 +40,8 @@
   },
   "theme": {
     "colors": {
-      "primary": "#039be5",
-      "secondary": "#c62828"
+      "primary": "#296c92",
+      "secondary": "#b2f5d9"
     },
     "appBarElevation": 1
   }
