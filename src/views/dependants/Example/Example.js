@@ -19,8 +19,6 @@ export const Example = () => {
   const handleSubmission = (event) => {
     let formData = new FormData();
     formData.append('imageFile', event.target.files[0])
-    console.log(formData)
-    console.log(event.target.files)
     API.uploadImage(formData, setImageURL);
   }
 
@@ -28,7 +26,7 @@ export const Example = () => {
     API.createNews({
       title: title,
       content: contentStorage,
-      category: category,
+      category: category.toUpperCase(),
       imageURL: imageURL,
       link: link
     })
