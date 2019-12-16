@@ -76,7 +76,6 @@ class API {
   getNews = (data, callback) => {
     axiosInstance.post('/news/getNews', data, {
     }).then(response => {
-      console.log(response.data.data)
       return callback(response.data.data.data)
     }).catch(error => {
       errorHelper(error)
@@ -89,7 +88,6 @@ class API {
         'Content-Type': 'multipart/form-data',
       }
     }).then(response => {
-      console.log(response.data.data.imageFileURL.original)
       notify("Image Uploaded")
       return callback(response.data.data.imageFileURL.original)
     }).catch(error => {
@@ -100,7 +98,6 @@ class API {
   getCategories = (callback) => {
     axiosInstance.get('/news/getCategories', {
     }).then(response => {
-      console.log(response.data.data)
       return callback(response.data.data.data)
     }).catch(error => {
       errorHelper(error)
