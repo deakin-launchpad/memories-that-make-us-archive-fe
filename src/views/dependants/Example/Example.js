@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Grid, Typography, Button, Card, CardContent, CardActions, makeStyles, TextField, TextareaAutosize, IconButton } from '@material-ui/core';
+import { Grid, Button, makeStyles, TextField, IconButton } from '@material-ui/core';
 import PhotoCamera from '@material-ui/icons/PhotoCamera';
 import { EnhancedEditor } from 'components';
 import { API } from 'helpers/index';
@@ -19,8 +19,6 @@ export const Example = () => {
   const handleSubmission = (event) => {
     let formData = new FormData();
     formData.append('imageFile', event.target.files[0])
-    console.log(formData)
-    console.log(event.target.files)
     API.uploadImage(formData, setImageURL);
   }
 
@@ -28,7 +26,7 @@ export const Example = () => {
     API.createNews({
       title: title,
       content: contentStorage,
-      category: category,
+      category: category.toUpperCase(),
       imageURL: imageURL,
       link: link
     })
@@ -54,7 +52,6 @@ export const Example = () => {
             multiple
             onChange={handleSubmission}
             type="file"
-            className={classes.input}
           />
           <label htmlFor="icon-button-file">
             <IconButton color="primary" aria-label="upload picture" component="span">

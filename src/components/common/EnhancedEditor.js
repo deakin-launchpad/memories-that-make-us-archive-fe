@@ -14,7 +14,6 @@ export const EnhancedEditor = (props) => {
   const [menuBar, setMenuBar] = useState(true);
   const [height, setHeight] = useState(500);
   const [toolbar1, setToolbar1] = useState('bold italic underline| fontsizeselect formatselect | bullist numlist |  alignleft aligncenter alignright alignjustify');
-  const [toolbar2, setToolbar2] = useState('link image media | forecolor backcolor | outdent indent');
   const [removed_menuitems, setRemoved_menuitems] = useState('newdocument wordcount')
   const plugins = [
     'advlist autolink lists link image imagetools charmap print hr preview anchor',
@@ -40,8 +39,6 @@ export const EnhancedEditor = (props) => {
         setHeight(props.options.height);
       if (props.options.toolbar1 !== undefined)
         setToolbar1(props.options.toolbar1);
-      if (props.options.toolbar2 !== undefined)
-        setToolbar2(props.options.toolbar2);
       if (props.options.removedMenuItems !== undefined)
         setRemoved_menuitems(props.options.removedMenuItems);
     }

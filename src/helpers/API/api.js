@@ -66,7 +66,8 @@ class API {
         authorization: 'Bearer ' + AccessToken
       }
     }).then(response => {
-      notify("News Created");
+      notify("News Published");
+      window.location.reload();
     }).catch(error => {
       errorHelper(error)
     })
@@ -75,7 +76,6 @@ class API {
   getNews = (data, callback) => {
     axiosInstance.post('/news/getNews', data, {
     }).then(response => {
-      console.log(response.data.data)
       return callback(response.data.data.data)
     }).catch(error => {
       errorHelper(error)
@@ -88,8 +88,30 @@ class API {
         'Content-Type': 'multipart/form-data',
       }
     }).then(response => {
-      console.log(response.data.data.imageFileURL.original)
+      notify("Image Uploaded")
       return callback(response.data.data.imageFileURL.original)
+    }).catch(error => {
+      errorHelper(error)
+    })
+  }
+
+  getCategories = (callback) => {
+    axiosInstance.get('/news/getCategories', {
+    }).then(response => {
+      return callback(response.data.data.data)
+    }).catch(error => {
+      errorHelper(error)
+    })
+  }
+
+  deleteNews = (data) => {
+    axiosInstance.delete('/news/deleteNews/'+data, {
+      headers: {
+        authorization: 'Bearer ' + AccessToken
+      },
+    }).then(response => {
+      notify("News Deleted");
+      window.location.reload();
     }).catch(error => {
       errorHelper(error)
     })
