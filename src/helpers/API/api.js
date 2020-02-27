@@ -82,6 +82,15 @@ class API {
     })
   }
 
+  getNewsBySearch = (data, callback) => {
+    axiosInstance.post('/news/searchByKeyword', data, {
+    }).then(response => {
+      return callback(response.data.data.data)
+    }).catch(error => {
+      errorHelper(error)
+    })
+  }
+
   uploadImage = (data, callback) => {
     axiosInstance.post('/upload/uploadImage', data, {
       headers: {
