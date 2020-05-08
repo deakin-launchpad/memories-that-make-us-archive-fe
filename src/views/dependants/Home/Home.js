@@ -179,7 +179,7 @@ export const Home = () => {
         </Grid>
       </Grid>
       <Grid container justify='flex-start' direction='row' spacing={2}>
-        {articles != null && articles.map((article, i) => (
+        {articles !== null && articles.map((article, i) => (
           <Grid item xs={12} xl={3} lg={5} md={4} sm={5} key={i} >
             <Card className={classes.card}>
               <CardActionArea >

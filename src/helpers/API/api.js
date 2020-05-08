@@ -7,9 +7,24 @@ import { axiosInstance } from '../index';
 const errorHelper = (error, variant) => {
   if (error.response === undefined) {
     notify("Network Error");
+    logout();
     return false;
   }
   if (error.response.statusCode === 401) {
+    if (variant === "login")
+      return notify("Invalid Credentials");
+    notify("You may have been logged out");
+    logout();
+    return false;
+  }
+  if (error.response.data.statusCode === 401) {
+    if (variant === "login")
+      return notify("Invalid Credentials");
+    notify("You may have been logged out");
+    logout();
+    return false;
+  }
+  if (error.response.status === 401) {
     if (variant === "login")
       return notify("Invalid Credentials");
     notify("You may have been logged out");

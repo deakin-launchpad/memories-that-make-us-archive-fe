@@ -12,15 +12,15 @@ const useStyles = makeStyles(theme => ({
   input: {
     display: "none"
   }
-}))
+}));
 
 export const Example = () => {
 
   const handleSubmission = (event) => {
     let formData = new FormData();
-    formData.append('imageFile', event.target.files[0])
+    formData.append('imageFile', event.target.files[0]);
     API.uploadImage(formData, setImageURL);
-  }
+  };
 
   const handlePublish = () => {
     API.createNews({
@@ -29,8 +29,8 @@ export const Example = () => {
       category: category.toUpperCase(),
       imageURL: imageURL,
       link: link
-    })
-  }
+    });
+  };
   const classes = useStyles();
   const [contentStorage, setContentStorage] = useState('');
   const [imageURL, setImageURL] = useState('https://s3.au-syd.cloud-object-storage.appdomain.cloud/ipan-v2-bucket/image/profilePicture/original/Profile_p6ShcttnsmkW.png');
