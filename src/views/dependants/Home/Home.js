@@ -46,10 +46,10 @@ export const Home = () => {
       setCategory('');
     }
     if (currentPageNumber === '') {
-      API.getNews({ category: category, numberOfRecords: numberOfRecords, currentPageNumber: 1 }, setArticles);
+      API.getNews({ numberOfRecords: numberOfRecords, currentPageNumber: 1 }, setArticles);
     }
     else {
-      API.getNews({ category: category, numberOfRecords: numberOfRecords, currentPageNumber: currentPageNumber }, setArticles);
+      API.getNews({ numberOfRecords: numberOfRecords, currentPageNumber: currentPageNumber }, setArticles);
     }
   }, [category, numberOfRecords, currentPageNumber]);
 
@@ -67,10 +67,10 @@ export const Home = () => {
         setCategory('');
       }
       if (currentPageNumber === '') {
-        API.getNews({ category: category, numberOfRecords: numberOfRecords, currentPageNumber: 1 }, setArticles);
+        API.getNews({ numberOfRecords: numberOfRecords, currentPageNumber: 1 }, setArticles);
       }
       else {
-        API.getNews({ category: category, numberOfRecords: numberOfRecords, currentPageNumber: currentPageNumber }, setArticles);
+        API.getNews({ numberOfRecords: numberOfRecords, currentPageNumber: currentPageNumber }, setArticles);
       }
     }
   }, [search, category, numberOfRecords, currentPageNumber]);
@@ -185,15 +185,9 @@ export const Home = () => {
               <CardActionArea >
                 <CardMedia
                   className={classes.media}
-                  image={article.imageURL}
+                  image={article.media[0].thumbnail}
                   title={article.title}
                 />
-                {/* <EnhancedDrawer
-                  anchor={'bottom'}
-                  title={article.title}
-                  content={drawerContent}
-                  isOpen={bottomDrawerStatus}
-                  onClose={() => { setBottomDrawerStatus(false); }} /> */}
                 <CardContent >
                   <Typography gutterBottom variant="h6" component="h4">
                     {article.title}
@@ -203,7 +197,7 @@ export const Home = () => {
                 </CardContent>
               </CardActionArea>
               <CardActions className={classes.cardButton}>
-                {article.link === '' ? null :
+                {article.link === undefined || article.link === '' ? null :
                   <a target="_blank" href={article.link.substring(0, 8) === 'https://' ? article.link : 'https://' + article.link} rel="noopener noreferrer">
                     <Button size="small" color="primary"  >
                       Learn More

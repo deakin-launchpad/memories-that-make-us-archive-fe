@@ -9,12 +9,13 @@ import { APIKeys } from 'configurations';
  * Use apiKeys from configurations to change apiKey
 */
 export const EnhancedEditor = (props) => {
-  const [_content, _setContent] = useState('Content*');
+  const [_content, _setContent] = useState('');
   const [editorID, setEditorID] = useState();
   const [menuBar, setMenuBar] = useState(true);
   const [height, setHeight] = useState(500);
   const [toolbar1, setToolbar1] = useState('bold italic underline| fontsizeselect formatselect | bullist numlist |  alignleft aligncenter alignright alignjustify');
-  const [removed_menuitems, setRemoved_menuitems] = useState('newdocument wordcount')
+  const [toolbar2, setToolbar2] = useState('link image media | forecolor backcolor | outdent indent');
+  const [removed_menuitems, setRemoved_menuitems] = useState('newdocument wordcount');
   const plugins = [
     'advlist autolink lists link image imagetools charmap print hr preview anchor',
     'searchreplace visualblocks visualchars nonbreaking code fullscreen',
@@ -24,7 +25,7 @@ export const EnhancedEditor = (props) => {
   const setContent = (data) => {
     _setContent(data);
     if (props.getContent)
-      if (typeof props.getContent === 'function')
+      if (props.getContent instanceof Function)
         props.getContent(data);
   };
   useEffect(() => {
@@ -39,13 +40,16 @@ export const EnhancedEditor = (props) => {
         setHeight(props.options.height);
       if (props.options.toolbar1 !== undefined)
         setToolbar1(props.options.toolbar1);
+      if (props.options.toolbar2 !== undefined)
+        setToolbar2(props.options.toolbar2);
       if (props.options.removedMenuItems !== undefined)
         setRemoved_menuitems(props.options.removedMenuItems);
     }
   }, [props]);
 
   let initObj = {
-    height, plugins, removed_menuitems, content_css, image_advtab: true, toolbar1, 
+    menubar: false,
+    height, plugins, removed_menuitems, content_css, image_advtab: true, toolbar1, toolbar2,
     file_picker_types: 'file image media', images_reuse_filename: true,
     file_picker_callback: props.imageUpload === undefined ? null : (callback) => {
       var input = document.createElement('input');

@@ -6,7 +6,7 @@
       "type": "button",
       "icon": "home",
       "controller": "/home",
-      "customTitle": "LPAD News",
+      "customTitle": "Memorie",
       "isFavourite": true,
       "subMenuItems": []
     },

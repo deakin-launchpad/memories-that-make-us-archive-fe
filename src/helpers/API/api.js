@@ -76,7 +76,7 @@ class API {
   }
 
   createNews = (data) => {
-    axiosInstance.post('/news/createNews', data, {
+    axiosInstance.post('/memory/createMemory', data, {
       headers: {
         authorization: 'Bearer ' + AccessToken
       }
@@ -89,7 +89,7 @@ class API {
   }
 
   getNews = (data, callback) => {
-    axiosInstance.post('/news/getNews', data, {
+    axiosInstance.post('/memory/getMemories', data, {
     }).then(response => {
       return callback(response.data.data.data)
     }).catch(error => {
@@ -120,7 +120,7 @@ class API {
   }
 
   getCategories = (callback) => {
-    axiosInstance.get('/news/getCategories', {
+    axiosInstance.get('/memory/getRegions ', {
     }).then(response => {
       return callback(response.data.data.data)
     }).catch(error => {
