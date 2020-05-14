@@ -13,6 +13,7 @@ import { red, green, indigo, blue, teal, deepOrange, purple, lightBlue, lightGre
 
 export const CreatePost = (props) => {
   const [postData, setPostData] = useState("");
+  const [categories, setCategories] = useState("");
   const [image, setImage] = useState('');
   const [imageLocalLink, setLocalLink] = useState('');
   const [uname, setUname] = useState();
@@ -53,6 +54,7 @@ export const CreatePost = (props) => {
         let dataToSend = {
           "date": Date.now().toString(),
         };
+        let cat = [];
         if (postData)
           Object.assign(dataToSend, { title: postData });
         Object.assign(dataToSend, { content: content });
@@ -64,6 +66,10 @@ export const CreatePost = (props) => {
               "type": "IMAGE"
             }]
           });
+        if (categories) {
+          cat = categories.split(",");
+          Object.assign(dataToSend, { category: cat });
+        }
         API.createNews(dataToSend, () => {
           URL.revokeObjectURL(imageLocalLink);
           resetPoster();
@@ -151,6 +157,14 @@ export const CreatePost = (props) => {
             }>Remove Image</Button>
           </Grid>
         }
+        <Grid item xs={12}>
+          <TextField fullWidth
+            value={categories}
+            onChange={(e) => { setCategories(e.target.value); }}
+            variant={'outlined'}
+            placeholder="Categories (seperate by ,)"
+            color='primary' />
+        </Grid>
         <Grid item xs={12}>
           <Box border={1} style={{ paddingLeft: "10px", paddingRight: "10px", paddingTop: "10px", borderRadius: "10px", paddingBottom: "10px" }}>
             <InputLabel style={{ paddingBottom: "5px" }} >
