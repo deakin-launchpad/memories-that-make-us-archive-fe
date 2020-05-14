@@ -14,6 +14,8 @@ import { red, green, indigo, blue, teal, deepOrange, purple, lightBlue, lightGre
 export const CreatePost = (props) => {
   const [postData, setPostData] = useState("");
   const [categories, setCategories] = useState("");
+  const [date, setDate] = useState("");
+  const [region, setRegion] = useState("");
   const [image, setImage] = useState('');
   const [imageLocalLink, setLocalLink] = useState('');
   const [uname, setUname] = useState();
@@ -48,16 +50,19 @@ export const CreatePost = (props) => {
   };
 
   const uploadPost = () => {
-
-    if (postData && image) {
+    if (postData && content) {
       uploadImage(image, (imageLink) => {
         let dataToSend = {
-          "date": Date.now().toString(),
         };
         let cat = [];
         if (postData)
           Object.assign(dataToSend, { title: postData });
-        Object.assign(dataToSend, { content: content });
+        if (date)
+          Object.assign(dataToSend, { title: postData });
+        if (region)
+          Object.assign(dataToSend, { title: postData });
+        if (content)
+          Object.assign(dataToSend, { content: content });
         if (imageLink)
           Object.assign(dataToSend, {
             media: [{
@@ -79,16 +84,18 @@ export const CreatePost = (props) => {
       });
     } else if (postData === "") {
       notify("Title is required");
-    } else if (image === "") {
-      notify("Image is required");
-    } else notify('nothing to upload');
+    } else if (content === "") {
+      notify("Content is required");
+    } else notify('Title and Content required');
   };
   return (<Card style={{ width: '100%' }}>
     <CardContent>
       <input type="file" id="fileupload" multiple accept="image/*" style={{ display: 'none' }} onChange={(e) => {
-        let localUrl = URL.createObjectURL(e.target.files[0]);
-        setImage(e.target.files[0]);
-        setLocalLink(localUrl);
+        if (e.target.files[0] !== undefined) if (e.target.files[0] !== null) {
+          let localUrl = URL.createObjectURL(e.target.files[0]);
+          setImage(e.target.files[0]);
+          setLocalLink(localUrl);
+        }
       }} />
       <Grid container spacing={2}>
         <Grid item xs={12}>
@@ -163,6 +170,22 @@ export const CreatePost = (props) => {
             onChange={(e) => { setCategories(e.target.value); }}
             variant={'outlined'}
             placeholder="Categories (seperate by ,)"
+            color='primary' />
+        </Grid>
+        <Grid item xs={12}>
+          <TextField fullWidth
+            value={date}
+            onChange={(e) => { setDate(e.target.value); }}
+            variant={'outlined'}
+            placeholder="Date"
+            color='primary' />
+        </Grid>
+        <Grid item xs={12}>
+          <TextField fullWidth
+            value={region}
+            onChange={(e) => { setRegion(e.target.value); }}
+            variant={'outlined'}
+            placeholder="Region"
             color='primary' />
         </Grid>
         <Grid item xs={12}>
