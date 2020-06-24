@@ -112,7 +112,6 @@ class API {
         'Content-Type': 'multipart/form-data',
       }
     }).then(response => {
-      notify("Image Uploaded")
       return callback(response.data.data.imageFileURL.original)
     }).catch(error => {
       errorHelper(error)
@@ -126,7 +125,7 @@ class API {
         'Content-Type': 'multipart/form-data',
       }
     }).then(response => {
-      return callback(response.data.data.videoFileURL.uploadedVideo)
+      return callback(response.data.data.videoFileURL.uploadedVideo, response.data.data.videoFileURL.thumbnail)
     }).catch(error => {
       errorHelper(error);
     })
@@ -138,8 +137,7 @@ class API {
         'Content-Type': 'multipart/form-data',
       }
     }).then(response => {
-      notify("Audio Track Uploaded")
-      return callback(response.data.data.imageFileURL.original);
+      return callback(response.data.data.audioFile.original);
     }).catch(error => {
       errorHelper(error);
     })

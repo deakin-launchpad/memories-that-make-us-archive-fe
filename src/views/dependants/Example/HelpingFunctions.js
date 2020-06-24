@@ -235,14 +235,14 @@ export const CreatePost = (props) => {
                     if (!validateExtension(fileName, "image")) return notify("Unsupported File Selected");
                     formData.append('imageFile', files[0]);
                     API.uploadImage(formData, (imageLink) => {
-                      callback(imageLink);
+                      callback(imageLink, );
                     });
                     break;
                   case "video":
                     if (!validateExtension(fileName, "video")) return notify("Unsupported File Selected");
                     formData.append('videoFile', files[0]);
-                    API.uploadVideo(formData, (imageLink) => {
-                      callback(imageLink);
+                    API.uploadVideo(formData, (videoLink, thumbnail) => {
+                      callback(videoLink,{poster:thumbnail});
                     });
                     break;
                   case "audio":

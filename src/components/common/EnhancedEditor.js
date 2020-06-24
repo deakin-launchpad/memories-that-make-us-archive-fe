@@ -51,14 +51,14 @@ export const EnhancedEditor = (props) => {
     menubar: false,
     height, plugins, removed_menuitems, content_css, image_advtab: true, toolbar1, toolbar2,
     file_picker_types: 'image media', images_reuse_filename: true,
-    file_picker_callback: props.imageUpload === undefined ? null : (callback) => {
+    file_picker_callback: props.imageUpload === undefined ? null : (callback, value, meta) => {
       var input = document.createElement('input');
       input.setAttribute('type', 'file');
       input.setAttribute('accept', typeof props.imageUpload.fileTypes === 'string' ? props.imageUpload.fileTypes : '*');
       input.onchange = function () {
         if (props.imageUpload.function instanceof Function) {
-          props.imageUpload.function(this.files, (responseImageLink, title) => {
-            callback(responseImageLink, { title: title ? title : Math.random() });
+          props.imageUpload.function(this.files, (responseImageLink, { title, poster }) => {
+            callback(responseImageLink, { title: title ? title : Math.random(), poster: poster ? poster : null });
           });
         }
       };
