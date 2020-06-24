@@ -126,11 +126,9 @@ class API {
         'Content-Type': 'multipart/form-data',
       }
     }).then(response => {
-      notify("Video Uploaded")
-      console.log(response.data,"second =>", response.data.data)
       return callback(response.data.data.videoFileURL.uploadedVideo)
     }).catch(error => {
-      console.log(error)
+      errorHelper(error);
     })
   }
   uploadAudio = (data, callback) => {
@@ -141,9 +139,9 @@ class API {
       }
     }).then(response => {
       notify("Audio Track Uploaded")
-      return callback(response.data.data.imageFileURL.original)
+      return callback(response.data.data.imageFileURL.original);
     }).catch(error => {
-      errorHelper(error)
+      errorHelper(error);
     })
   }
 
@@ -157,7 +155,7 @@ class API {
   }
 
   deleteNews = (data) => {
-    axiosInstance.delete('/news/deleteNews/'+data, {
+    axiosInstance.delete('/news/deleteNews/' + data, {
       headers: {
         authorization: 'Bearer ' + AccessToken
       },

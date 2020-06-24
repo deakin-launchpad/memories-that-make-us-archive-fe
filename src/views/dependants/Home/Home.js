@@ -183,11 +183,11 @@ export const Home = () => {
           <Grid item xs={12} xl={3} lg={5} md={4} sm={5} key={i} >
             <Card className={classes.card}>
               <CardActionArea >
-                <CardMedia
+                {article.media[0] !== undefined && article.media[0].thumbnail !== undefined && <CardMedia
                   className={classes.media}
                   image={article.media[0].thumbnail}
                   title={article.title}
-                />
+                />}
                 <CardContent >
                   <Typography gutterBottom variant="h6" component="h4">
                     {article.title}

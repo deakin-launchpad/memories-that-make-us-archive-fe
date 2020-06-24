@@ -11,6 +11,25 @@ import ChatBubbleOutlineOutlinedIcon from '@material-ui/icons/ChatBubbleOutlineO
 import ThumbUpOutlinedIcon from '@material-ui/icons/ThumbUpOutlined';
 import { red, green, indigo, blue, teal, deepOrange, purple, lightBlue, lightGreen, orange, blueGrey } from '@material-ui/core/colors';
 
+var checkFileExtension = function (fileName) {
+  return fileName.substring(fileName.lastIndexOf('.') + 1, fileName.length) || fileName;
+};
+
+const validateExtension = (fileName, type) => {
+  const VALID_FILE_EXTENSIONS = {
+    VIDEO: ["mp4", "avi", "mov", "wmv", "webm"],
+    AUDIO: ["mp3", "ogg", "wav"],
+    DOCS: [],
+    IMAGE: ["png", "jpeg", "jpg"]
+  };
+  switch (type.toLowerCase()) {
+  case "video": return VALID_FILE_EXTENSIONS.VIDEO.includes(checkFileExtension(fileName));
+  case "audio": return VALID_FILE_EXTENSIONS.AUDIO.includes(checkFileExtension(fileName));
+  case "image": return VALID_FILE_EXTENSIONS.IMAGE.includes(checkFileExtension(fileName));
+  default: return false;
+  }
+};
+
 export const CreatePost = (props) => {
   const [postData, setPostData] = useState("");
   const [categories, setCategories] = useState("");
@@ -50,42 +69,53 @@ export const CreatePost = (props) => {
   };
 
   const uploadPost = () => {
-    if (postData && content) {
-      uploadImage(image, (imageLink) => {
-        let dataToSend = {
-        };
-        let cat = [];
-        if (postData)
-          Object.assign(dataToSend, { title: postData });
-        if (date)
-          Object.assign(dataToSend, { title: postData });
-        if (region)
-          Object.assign(dataToSend, { title: postData });
-        if (content)
-          Object.assign(dataToSend, { content: content });
-        if (imageLink)
-          Object.assign(dataToSend, {
-            media: [{
-              "link": imageLink,
-              "thumbnail": imageLink,
-              "type": "IMAGE"
-            }]
-          });
-        if (categories) {
-          cat = categories.split(",");
-          Object.assign(dataToSend, { category: cat });
-        }
-        API.createNews(dataToSend, () => {
-          URL.revokeObjectURL(imageLocalLink);
-          resetPoster();
-          if (props.reload instanceof Function)
-            props.reload();
+
+    const prepareDataForSending = (imageLink) => {
+      let dataToSend = {
+      };
+      let cat = [];
+      if (postData)
+        Object.assign(dataToSend, { title: postData });
+      if (date)
+        Object.assign(dataToSend, { title: postData });
+      if (region)
+        Object.assign(dataToSend, { title: postData });
+      if (content)
+        Object.assign(dataToSend, { content: content });
+      if (categories) {
+        cat = categories.split(",");
+        Object.assign(dataToSend, { category: cat });
+      }
+      if (imageLink)
+        Object.assign(dataToSend, {
+          media: [{
+            "link": imageLink,
+            "thumbnail": imageLink,
+            "type": "IMAGE"
+          }]
         });
+      return dataToSend;
+    };
+
+    const createNews = (imageLink) => {
+      API.createNews(prepareDataForSending(imageLink), () => {
+        if (imageLink)
+          URL.revokeObjectURL(imageLocalLink);
+        resetPoster();
+        if (props.reload instanceof Function)
+          props.reload();
       });
+    };
+    if (postData && content) {
+      if (image)
+        uploadImage(image, (imageLink) => {
+          createNews(imageLink);
+        });
+      else createNews();
     } else if (postData === "") {
       notify("Title is required");
     } else if (content === "") {
-      notify("Content is required");
+      notify("Memory content is required");
     } else notify('Title and Content required');
   };
   return (<Card style={{ width: '100%' }}>
@@ -143,7 +173,6 @@ export const CreatePost = (props) => {
                       edge="end"
                       color='secondary'
                       onClick={() => {
-                        console.log(content);
                         uploadPost();
                       }}
                     >
@@ -198,29 +227,35 @@ export const CreatePost = (props) => {
               imageUpload={{
                 fileTypes: "*",
                 function: (files, callback) => {
+                  let fileName = files[0].name;
                   let formData = new FormData();
                   let type = files[0].type.split("/").shift();
                   switch (type) {
                   case "image":
+                    if (!validateExtension(fileName, "image")) return notify("Unsupported File Selected");
                     formData.append('imageFile', files[0]);
                     API.uploadImage(formData, (imageLink) => {
                       callback(imageLink);
                     });
                     break;
                   case "video":
+                    if (!validateExtension(fileName, "video")) return notify("Unsupported File Selected");
                     formData.append('videoFile', files[0]);
                     API.uploadVideo(formData, (imageLink) => {
                       callback(imageLink);
                     });
                     break;
                   case "audio":
+                    if (!validateExtension(fileName, "audio")) return notify("Unsupported File Selected");
                     formData.append('audioFile', files[0]);
                     API.uploadAudio(formData, (imageLink) => {
                       callback(imageLink);
                     });
+                    break;
+                  default: return notify("invalid file selected");
                   }
                 }
-              }}/>
+              }} />
           </Box>
         </Grid>
       </Grid>
