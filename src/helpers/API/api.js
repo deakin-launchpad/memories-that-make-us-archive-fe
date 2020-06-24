@@ -105,14 +105,42 @@ class API {
       errorHelper(error)
     })
   }
-
   uploadImage = (data, callback) => {
     axiosInstance.post('/upload/uploadImage', data, {
       headers: {
+        authorization: 'Bearer ' + AccessToken,
         'Content-Type': 'multipart/form-data',
       }
     }).then(response => {
       notify("Image Uploaded")
+      return callback(response.data.data.imageFileURL.original)
+    }).catch(error => {
+      errorHelper(error)
+    })
+  }
+
+  uploadVideo = (data, callback) => {
+    axiosInstance.post('/upload/uploadVideo', data, {
+      headers: {
+        authorization: 'Bearer ' + AccessToken,
+        'Content-Type': 'multipart/form-data',
+      }
+    }).then(response => {
+      notify("Video Uploaded")
+      console.log(response.data,"second =>", response.data.data)
+      return callback(response.data.data.videoFileURL.uploadedVideo)
+    }).catch(error => {
+      console.log(error)
+    })
+  }
+  uploadAudio = (data, callback) => {
+    axiosInstance.post('/upload/uploadAudio', data, {
+      headers: {
+        authorization: 'Bearer ' + AccessToken,
+        'Content-Type': 'multipart/form-data',
+      }
+    }).then(response => {
+      notify("Audio Track Uploaded")
       return callback(response.data.data.imageFileURL.original)
     }).catch(error => {
       errorHelper(error)

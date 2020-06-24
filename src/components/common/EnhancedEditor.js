@@ -50,7 +50,7 @@ export const EnhancedEditor = (props) => {
   let initObj = {
     menubar: false,
     height, plugins, removed_menuitems, content_css, image_advtab: true, toolbar1, toolbar2,
-    file_picker_types: 'file image media', images_reuse_filename: true,
+    file_picker_types: 'image media', images_reuse_filename: true,
     file_picker_callback: props.imageUpload === undefined ? null : (callback) => {
       var input = document.createElement('input');
       input.setAttribute('type', 'file');

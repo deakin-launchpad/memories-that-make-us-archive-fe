@@ -97,8 +97,8 @@ export const CreatePost = (props) => {
           setLocalLink(localUrl);
         }
       }} />
-      <Grid container spacing={2}>
-        <Grid item xs={12}>
+      <Grid container spacing={2} justify="center">
+        <Grid item xs={12} md={8}>
           <TextField multiline fullWidth
             value={postData}
             onChange={(e) => { setPostData(e.target.value); }}
@@ -154,7 +154,7 @@ export const CreatePost = (props) => {
             }} />
         </Grid>
         {imageLocalLink &&
-          <Grid item xs={12} >
+          <Grid item xs={12} md={8} >
             <Image src={imageLocalLink} />
             <Button onClick={() => {
               URL.revokeObjectURL(imageLocalLink);
@@ -164,7 +164,7 @@ export const CreatePost = (props) => {
             }>Remove Image</Button>
           </Grid>
         }
-        <Grid item xs={12}>
+        <Grid item xs={12} md={8}>
           <TextField fullWidth
             value={categories}
             onChange={(e) => { setCategories(e.target.value); }}
@@ -172,7 +172,7 @@ export const CreatePost = (props) => {
             placeholder="Categories (seperate by ,)"
             color='primary' />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={12} md={8}>
           <TextField fullWidth
             value={date}
             onChange={(e) => { setDate(e.target.value); }}
@@ -180,7 +180,7 @@ export const CreatePost = (props) => {
             placeholder="Date"
             color='primary' />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={12} md={8}>
           <TextField fullWidth
             value={region}
             onChange={(e) => { setRegion(e.target.value); }}
@@ -188,7 +188,7 @@ export const CreatePost = (props) => {
             placeholder="Region"
             color='primary' />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={12} md={8}>
           <Box border={1} style={{ paddingLeft: "10px", paddingRight: "10px", paddingTop: "10px", borderRadius: "10px", paddingBottom: "10px" }}>
             <InputLabel style={{ paddingBottom: "5px" }} >
               Memory
@@ -196,14 +196,31 @@ export const CreatePost = (props) => {
             <EnhancedEditor content={content} id={'textEditor'}
               getContent={(content) => setContent(content)}
               imageUpload={{
+                fileTypes: "*",
                 function: (files, callback) => {
                   let formData = new FormData();
-                  formData.append('imageFile', files[0]);
-                  API.uploadImage(formData, (imageLink) => {
-                    callback(imageLink);
-                  });
+                  let type = files[0].type.split("/").shift();
+                  switch (type) {
+                  case "image":
+                    formData.append('imageFile', files[0]);
+                    API.uploadImage(formData, (imageLink) => {
+                      callback(imageLink);
+                    });
+                    break;
+                  case "video":
+                    formData.append('videoFile', files[0]);
+                    API.uploadVideo(formData, (imageLink) => {
+                      callback(imageLink);
+                    });
+                    break;
+                  case "audio":
+                    formData.append('audioFile', files[0]);
+                    API.uploadAudio(formData, (imageLink) => {
+                      callback(imageLink);
+                    });
+                  }
                 }
-              }} />
+              }}/>
           </Box>
         </Grid>
       </Grid>
