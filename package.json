@@ -61,6 +61,7 @@
     "react-hooks/exhaustive-deps": "warn"
   },
   "devDependencies": {
+    "babel-eslint": "^10.1.0",
     "easter-egg-collection": "^1.4.56",
     "eslint-plugin-react-hooks": "^2.0.1"
   }
