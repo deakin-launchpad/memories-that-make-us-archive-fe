@@ -6,6 +6,7 @@ import React, { useEffect, useState } from 'react';
 import { Snackbar } from '@material-ui/core';
 
 let OpenNotificationFunction;
+var notificationTimeOut = 3000;
 
 /***
  *  Notification is a component which needs to be places in Global App.js or alongside the Routes
@@ -25,6 +26,7 @@ const EnhancedNotification = (props) => {
   };
   const closeNotification = () => {
     setOpen(false);
+    notificationTimeOut = 3000;
     setMessage('');
   };
   useEffect(() => {
@@ -43,7 +45,7 @@ const EnhancedNotification = (props) => {
     <Snackbar
       anchorOrigin={{ vertical: verticalPosition, horizontal: horizontalPosition }}
       message={messageSpan}
-      autoHideDuration={3000}
+      autoHideDuration={notificationTimeOut !== undefined ? notificationTimeOut : 3000}
       onClose={closeNotification}
       open={open}
       ContentProps={{
@@ -74,16 +76,24 @@ export const DisplayBrowserNotification = (message) => {
   }
 };
 
-export const notify = (message, callback, variant) => {
-  if (variant === 'browser')
-    DisplayBrowserNotification(message);
-  else if (variant === 'both') {
+export const notify = (message, options) => {
+  if (options) {
+    let { timeout, callback, variant } = options;
+    console.log("setting notificaiton timeout to ", timeout);
+    notificationTimeOut = timeout;
+    if (variant === 'browser')
+      DisplayBrowserNotification(message);
+    else if (variant === 'both') {
+      OpenNotificationFunction(message);
+      DisplayBrowserNotification(message);
+    } else
+      OpenNotificationFunction(message);
+    if (callback !== undefined)
+      if (typeof callback === 'function')
+        callback();
+  } else {
     OpenNotificationFunction(message);
-    DisplayBrowserNotification(message);
-  } else
-    OpenNotificationFunction(message);
-  if (typeof callback === 'function')
-    callback();
+  }
 };
 
 
