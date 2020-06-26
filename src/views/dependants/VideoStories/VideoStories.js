@@ -6,7 +6,7 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import { LoadingScreen, EnhancedModal, notify } from 'components';
 import Plyr from 'react-plyr';
 
-const VideoStoryCard = ({ storyId, title, description, thumbnail, videos }) => {
+const VideoStoryCard = ({ storyId, title, description, thumbnail, videos, reloadData }) => {
 
   const [titleForTextFeild, setTitle] = useState();
   const [descriptionForTextFeild, setDescription] = useState();
@@ -178,7 +178,11 @@ const VideoStoryCard = ({ storyId, title, description, thumbnail, videos }) => {
         setEditVideosIsOpen(true);
         handleClose(e);
       }}>Manage Videos</MenuItem>
-      <MenuItem onClick={handleClose}>Delete</MenuItem>
+      <MenuItem onClick={() => {
+        API.deleteVideoStory(storyId, () => {
+          reloadData();
+        });
+      }}>Delete</MenuItem>
 
     </Menu>
     <Card>
@@ -215,13 +219,20 @@ export const VideoStories = () => {
       setStories(response);
     });
   }, []);
+
+  const reloadData = () => {
+    API.getVideoStories((response) => {
+      setStories(response);
+    });
+  };
+
   if (stories === undefined) return <LoadingScreen />;
   let content = (<Container style={{ margin: "10px" }} >
     <Grid container spacing={1}>
       {
         stories.map((story, i) => {
           return <Grid item xs={12} sm={6} md={4} lg={4} xl={4} key={`story_${i}`}>
-            <VideoStoryCard storyId={story._id} videos={story.videos} title={story.title} description={story.description} thumbnail={story.thumbnail} />
+            <VideoStoryCard reloadData={reloadData} storyId={story._id} videos={story.videos} title={story.title} description={story.description} thumbnail={story.thumbnail} />
           </Grid>;
         })
       }
