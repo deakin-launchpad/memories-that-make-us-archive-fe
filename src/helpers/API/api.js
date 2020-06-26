@@ -171,6 +171,16 @@ class API {
     }).catch(error => errorHelper(error));
   }
 
+  createVideoStory = (data, callback) => {
+    axiosInstance.post(`videoStories/createVideoStory`, data, {
+      headers: {
+        authorization: 'Bearer ' + AccessToken
+      }
+    }).then(() => {
+      callback(true);
+    }).catch(error => errorHelper(error));
+  }
+
   deleteVideoStory = (storyId, callback) => {
     axiosInstance.delete(`videoStories/deleteVideoStory/${storyId}`, {
       headers: {

@@ -208,7 +208,7 @@ const VideoStoryCard = ({ storyId, title, description, thumbnail, videos, reload
       } />
       <CardContent>
         {description}
-        <Plyr
+        {videos.length > 0 ? <Plyr
           type="video"
           poster={thumbnail}
           sources={preparedSources}
@@ -217,7 +217,9 @@ const VideoStoryCard = ({ storyId, title, description, thumbnail, videos, reload
             default: qualaties[qualaties.length - 1],
             options: qualaties
           }}
-        />
+        /> : <center> <br /><Button onClick={() => {
+          setEditVideosIsOpen(true);
+        }}>Manage Videos</Button></center>}
       </CardContent>
     </Card >
   </div>
@@ -227,6 +229,13 @@ const VideoStoryCard = ({ storyId, title, description, thumbnail, videos, reload
 
 export const VideoStories = () => {
   const [stories, setStories] = useState();
+
+  const [titleForTextFeild, setTitle] = useState();
+  const [descriptionForTextFeild, setDescription] = useState();
+
+  const [creationModalIsOpen, setCreationModalIsOpen] = useState(false);
+
+
   useEffect(() => {
     API.getVideoStories((response) => {
       setStories(response);
@@ -239,9 +248,54 @@ export const VideoStories = () => {
     });
   };
 
+  const createStory = () => {
+    let data = {
+      title: titleForTextFeild,
+      description: descriptionForTextFeild
+    };
+    API.createVideoStory(data, (response) => {
+      if (response) {
+        notify("Created");
+        reloadData();
+      }
+    });
+  };
+
+  let createVideoContent = (<Grid container spacing={1}>
+    <Grid item xs={12}>
+      <TextField label="Title" fullWidth={true} variant="outlined" defaultValue={titleForTextFeild} value={titleForTextFeild} onChange={(e) => {
+        setTitle(e.target.value);
+      }} />
+    </Grid>
+    <Grid item xs={12}>
+      <TextField label="Description" fullWidth={true} variant="outlined" defaultValue={descriptionForTextFeild} value={descriptionForTextFeild} onChange={(e) => {
+        setDescription(e.target.value);
+      }} />
+    </Grid>
+  </Grid>);
+
   if (stories === undefined) return <LoadingScreen />;
   let content = (<Container style={{ margin: "10px" }} >
+    <EnhancedModal isOpen={creationModalIsOpen}
+      dialogTitle="Create Video Story"
+      dialogContent={createVideoContent}
+      options={{
+        onSubmit: () => {
+          createStory();
+          setCreationModalIsOpen(false);
+        },
+        onClose: () => {
+          setCreationModalIsOpen(false);
+        },
+        submitButtonName: "Create"
+      }} />
     <Grid container spacing={1}>
+      <Grid item xs={12}>
+        <Button onClick={() => {
+          setCreationModalIsOpen(true);
+        }
+        }>Create Video Story</Button>
+      </Grid>
       {
         stories.map((story, i) => {
           return <Grid item xs={12} sm={6} md={4} lg={4} xl={4} key={`story_${i}`}>
