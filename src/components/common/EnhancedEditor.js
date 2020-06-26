@@ -54,7 +54,20 @@ export const EnhancedEditor = (props) => {
     file_picker_callback: props.imageUpload === undefined ? null : (callback, value, meta) => {
       var input = document.createElement('input');
       input.setAttribute('type', 'file');
-      input.setAttribute('accept', typeof props.imageUpload.fileTypes === 'string' ? props.imageUpload.fileTypes : '*');
+      console.log(meta.filetype);
+      switch (meta.filetype) {
+      case "media":
+        input.setAttribute('accept', "video/*,audio/*");
+        break;
+      case "image":
+        input.setAttribute('accept', "image/*");
+        break;
+      case "file":
+        input.setAttribute('accept', typeof props.imageUpload.fileTypes === 'string' ? props.imageUpload.fileTypes : '*');
+        break;
+      default:
+        input.setAttribute('accept', typeof props.imageUpload.fileTypes === 'string' ? props.imageUpload.fileTypes : '*');
+      }
       input.onchange = function () {
         if (props.imageUpload.function instanceof Function) {
           props.imageUpload.function(this.files, (responseImageLink, { title, poster }) => {
