@@ -191,6 +191,17 @@ class API {
     }).catch(error => errorHelper(error));
   }
 
+  deleteVideoFromExistingVideoStory = (data, callback) => {
+    axiosInstance.delete(`videoStories/${data.storyId}/deleteVideoFromExisting/${data.videoId}`, {
+      headers: {
+        authorization: 'Bearer ' + AccessToken
+      }
+    }).then(() => {
+      callback(true);
+    }).catch(error => errorHelper(error));
+  }
+
+
   getCategories = (callback) => {
     axiosInstance.get('/memory/getRegions ', {
     }).then(response => {

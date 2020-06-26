@@ -74,14 +74,22 @@ const VideoStoryCard = ({ storyId, title, description, thumbnail, videos, reload
             <ListItemText primary={`Quality : ${video.width}`} secondary={video.link} />
             <ListItemSecondaryAction>
               <IconButton
-                onClick={() => { }}
+                onClick={() => {
+                  let data = {
+                    storyId,
+                    videoId: video._id
+                  };
+                  API.deleteVideoFromExistingVideoStory(data, () => {
+                    notify("deleted");
+                  });
+                }}
               ><i className="material-icons" style={{ color: "red" }}>delete</i></IconButton>
             </ListItemSecondaryAction>
           </ListItem>;
         })
       }
     </List>
-  </Container>);
+  </Container >);
 
   const saveVideo = () => {
     let dataToSend = {
