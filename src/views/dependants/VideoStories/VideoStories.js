@@ -29,11 +29,12 @@ const VideoStoryCard = ({ storyId, title, description, thumbnail, videos }) => {
       let temp = [];
       let qualaties = [];
       videos.forEach(video => {
-        qualaties.push(Number(video.width));
+        qualaties.push(video.width.toString());
         temp.push({
           src: video.link,
-          size: Number(video.width),
-          type: "video/mp4"
+          size: video.width.toString(),
+          type: "video/mp4",
+          label: `${video.width}p`
         });
       });
       setQualaties(qualaties);
@@ -90,6 +91,9 @@ const VideoStoryCard = ({ storyId, title, description, thumbnail, videos }) => {
         description: descriptionForTextFeild
       }
     };
+    API.editVideoStory(dataToSend, (response) => {
+      if (response) notify("Updated");
+    });
   };
 
   if (videos === undefined) return <LoadingScreen />;
@@ -152,7 +156,6 @@ const VideoStoryCard = ({ storyId, title, description, thumbnail, videos }) => {
             {"Add Video"}
           </Button>
         </Grid>
-
       </Grid>}
       dialogContent={manageVideoContent}
       options={{

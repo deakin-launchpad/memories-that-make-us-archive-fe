@@ -161,6 +161,16 @@ class API {
     });
   }
 
+  editVideoStory = (data, callback) => {
+    axiosInstance.put(`videoStories/updateVideoStory/${data.storyId}`, data.data, {
+      headers: {
+        authorization: 'Bearer ' + AccessToken
+      }
+    }).then(() => {
+      callback(true);
+    }).catch(error => errorHelper(error));
+  }
+
   addVideoToExistingVideoStory = (data, callback) => {
     axiosInstance.put(`videoStories/${data.storyId}/addVideoToExisting`, data.data, {
       headers: {
