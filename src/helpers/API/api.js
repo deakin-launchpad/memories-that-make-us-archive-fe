@@ -121,31 +121,36 @@ class API {
 
   uploadVideo = (data, callback) => {
     axiosInstance.post('/upload/uploadVideo', data, {
+      timeout: 0,
+      onUploadProgress: function (progressEvent) {
+        const {total, loaded} = progressEvent
+        let percentage = Math.floor(loaded * 100 / total)
+        console.log(percentage)
+      },
       headers: {
         authorization: 'Bearer ' + AccessToken,
         'Content-Type': 'multipart/form-data',
       }
     }).then(response => {
       notify("Video Uploaded")
-      console.log(response.data,"second =>", response.data.data)
       return callback(response.data.data.videoFileURL.uploadedVideo)
     }).catch(error => {
       console.log(error)
     })
   }
-  uploadAudio = (data, callback) => {
-    axiosInstance.post('/upload/uploadAudio', data, {
-      headers: {
-        authorization: 'Bearer ' + AccessToken,
-        'Content-Type': 'multipart/form-data',
-      }
-    }).then(response => {
-      notify("Audio Track Uploaded")
-      return callback(response.data.data.imageFileURL.original)
-    }).catch(error => {
-      errorHelper(error)
-    })
-  }
+  // uploadAudio = (data, callback) => {
+  //   axiosInstance.post('/upload/uploadAudio', data, {
+  //     headers: {
+  //       authorization: 'Bearer ' + AccessToken,
+  //       'Content-Type': 'multipart/form-data',
+  //     }
+  //   }).then(response => {
+  //     notify("Audio Track Uploaded")
+  //     return callback(response.data.data.imageFileURL.original)
+  //   }).catch(error => {
+  //     errorHelper(error)
+  //   })
+  // }
 
   getCategories = (callback) => {
     axiosInstance.get('/memory/getRegions ', {

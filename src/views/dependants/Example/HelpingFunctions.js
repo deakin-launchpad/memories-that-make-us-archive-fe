@@ -10,6 +10,8 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import ChatBubbleOutlineOutlinedIcon from '@material-ui/icons/ChatBubbleOutlineOutlined';
 import ThumbUpOutlinedIcon from '@material-ui/icons/ThumbUpOutlined';
 import { red, green, indigo, blue, teal, deepOrange, purple, lightBlue, lightGreen, orange, blueGrey } from '@material-ui/core/colors';
+import LinearProgress from '@material-ui/core/LinearProgress';
+
 
 export const CreatePost = (props) => {
   const [postData, setPostData] = useState("");
@@ -20,6 +22,8 @@ export const CreatePost = (props) => {
   const [imageLocalLink, setLocalLink] = useState('');
   const [uname, setUname] = useState();
   const [content, setContent] = useState("");
+  const [progress, setProgress] = useState(0);
+
 
   useEffect(() => {
     let arr = String(props.userName).split(' ');
@@ -29,6 +33,21 @@ export const CreatePost = (props) => {
         arr2.push(value[0]);
     });
     setUname(arr2.join("").toUpperCase());
+
+    const timer = setInterval(() => {
+      setProgress((oldProgress) => {
+        if (oldProgress === 100) {
+          return 0;
+        }
+        const diff = Math.random() * 10;
+        return Math.min(oldProgress + diff, 100);
+      });
+    }, 500);
+
+    return () => {
+      clearInterval(timer);
+    };
+
   }, [props.userName]);
 
 
@@ -132,7 +151,6 @@ export const CreatePost = (props) => {
                       aria-label="toggle password visibility"
                       edge="end"
                       color='primary'
-
                     >
                       <i className="material-icons">local_see</i>
                     </IconButton>
@@ -187,6 +205,9 @@ export const CreatePost = (props) => {
             variant={'outlined'}
             placeholder="Region"
             color='primary' />
+        </Grid>
+        <Grid xs={12} md={8}>
+          {/* <LinearProgress variant="determinate" value={progress} /> */}
         </Grid>
         <Grid item xs={12} md={8}>
           <Box border={1} style={{ paddingLeft: "10px", paddingRight: "10px", paddingTop: "10px", borderRadius: "10px", paddingBottom: "10px" }}>
