@@ -81,6 +81,7 @@ const VideoStoryCard = ({ storyId, title, description, thumbnail, videos, reload
                   };
                   API.deleteVideoFromExistingVideoStory(data, () => {
                     notify("deleted");
+                    reloadData();
                   });
                 }}
               ><i className="material-icons" style={{ color: "red" }}>delete</i></IconButton>
@@ -100,7 +101,10 @@ const VideoStoryCard = ({ storyId, title, description, thumbnail, videos, reload
       }
     };
     API.editVideoStory(dataToSend, (response) => {
-      if (response) notify("Updated");
+      if (response) {
+        notify("Updated");
+        reloadData();
+      }
     });
   };
 
@@ -144,6 +148,7 @@ const VideoStoryCard = ({ storyId, title, description, thumbnail, videos, reload
                     if (response) {
                       let textToNotify = "File Uploaded Successfuly";
                       notify(textToNotify, { timeout: 3000 });
+                      reloadData();
                     }
                   });
                 }, {
