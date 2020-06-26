@@ -235,21 +235,59 @@ export const CreatePost = (props) => {
                     if (!validateExtension(fileName, "image")) return notify("Unsupported File Selected");
                     formData.append('imageFile', files[0]);
                     API.uploadImage(formData, (imageLink) => {
-                      callback(imageLink, );
+                      callback(imageLink);
+                      let textToNotify = "File Uploaded Successfuly";
+                      notify(textToNotify, { timeout: 3000 });
+                    }, {
+                      onUploadProgress: (progressPercent) => {
+                        if (progressPercent === 100) {
+                          let textToNotify = "Audio is being processed at the server";
+                          notify(textToNotify, { timeout: 99999 * 99999 });
+                        } else {
+                          let textToNotify = "Uploading audio to server: " + progressPercent;
+                          notify(textToNotify, { timeout: 99999 * 99999 });
+                        }
+                      },
                     });
                     break;
                   case "video":
                     if (!validateExtension(fileName, "video")) return notify("Unsupported File Selected");
                     formData.append('videoFile', files[0]);
                     API.uploadVideo(formData, (videoLink, thumbnail) => {
-                      callback(videoLink,{poster:thumbnail});
+                      callback(videoLink, { poster: thumbnail });
+                      let textToNotify = "File Uploaded Successfuly";
+                      notify(textToNotify, { timeout: 3000 });
+                    }, {
+                      onUploadProgress: (progressPercent) => {
+                        if (progressPercent === 100) {
+                          let textToNotify = "Video is being processed at the server";
+                          notify(textToNotify, { timeout: null });
+                        } else {
+                          let textToNotify = "Uploading video to server: " + progressPercent;
+                          notify(textToNotify, { timeout: null });
+                        }
+                      },
                     });
                     break;
                   case "audio":
                     if (!validateExtension(fileName, "audio")) return notify("Unsupported File Selected");
                     formData.append('audioFile', files[0]);
-                    API.uploadAudio(formData, (imageLink) => {
-                      callback(imageLink);
+                    API.uploadAudio(formData, (audioLink) => {
+                      if (audioLink !== undefined) {
+                        callback(audioLink);
+                        let textToNotify = "File Uploaded Successfuly";
+                        notify(textToNotify, {timeout:3000});
+                      }
+                    }, {
+                      onUploadProgress: (progressPercent) => {
+                        if (progressPercent === 100) {
+                          let textToNotify = "Audio is being processed at the server";
+                          notify(textToNotify, { timeout: null });
+                        } else {
+                          let textToNotify = "Uploading audio to server: " + progressPercent;
+                          notify(textToNotify, { timeout: null });
+                        }
+                      }
                     });
                     break;
                   default: return notify("invalid file selected");
@@ -264,7 +302,7 @@ export const CreatePost = (props) => {
 };
 
 CreatePost.propTypes = {
-  userName: PropTypes.string.isRequired,
+  userName: PropTypes.string,
   reload: PropTypes.func,
   userImage: PropTypes.string
 };
