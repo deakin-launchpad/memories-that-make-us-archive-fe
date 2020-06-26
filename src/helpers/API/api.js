@@ -131,7 +131,8 @@ class API {
     }).then(response => {
       let uploadedVideoLink = response.data.data.videoFileURL.uploadedVideo;
       let uploadedVideoThumbnail = response.data.data.videoFileURL.thumbnail;
-      return callback(uploadedVideoLink, uploadedVideoThumbnail);
+      let width = response.data.data.videoFileURL.metadata.maxWidth;
+      return callback(uploadedVideoLink, uploadedVideoThumbnail, width);
     }).catch(error => {
       errorHelper(error);
     });
@@ -149,6 +150,25 @@ class API {
     }).catch(error => {
       errorHelper(error);
     });
+  }
+
+  getVideoStories = (callback) => {
+    axiosInstance.get('/videoStories/getVideoStories ', {
+    }).then(response => {
+      callback(response.data.data.stories);
+    }).catch(error => {
+      errorHelper(error);
+    });
+  }
+
+  addVideoToExistingVideoStory = (data, callback) => {
+    axiosInstance.put(`videoStories/${data.storyId}/addVideoToExisting`, data.data, {
+      headers: {
+        authorization: 'Bearer ' + AccessToken
+      }
+    }).then(() => {
+      callback(true);
+    }).catch(error => errorHelper(error));
   }
 
   getCategories = (callback) => {

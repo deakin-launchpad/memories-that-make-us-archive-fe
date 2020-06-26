@@ -11,10 +11,19 @@
       "subMenuItems": []
     },
     {
-      "name": "Example",
+      "name": "Memories",
       "type": "button",
       "icon": "code",
       "controller": "/examples",
+      "customTitle": "Publish",
+      "isFavourite": true,
+      "subMenuItems": []
+    },
+    {
+      "name": "Video Stories",
+      "type": "button",
+      "icon": "code",
+      "controller": "/videoStories",
       "customTitle": "Publish",
       "isFavourite": true,
       "subMenuItems": []
