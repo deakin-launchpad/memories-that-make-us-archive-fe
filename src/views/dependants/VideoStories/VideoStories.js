@@ -191,8 +191,9 @@ const VideoStoryCard = ({ storyId, title, description, thumbnail, videos, reload
         setEditVideosIsOpen(true);
         handleClose(e);
       }}>Manage Videos</MenuItem>
-      <MenuItem onClick={() => {
+      <MenuItem onClick={(e) => {
         API.deleteVideoStory(storyId, () => {
+          handleClose(e);
           reloadData();
         });
       }}>Delete</MenuItem>
