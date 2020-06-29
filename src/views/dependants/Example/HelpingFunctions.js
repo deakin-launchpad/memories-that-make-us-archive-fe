@@ -109,7 +109,19 @@ export const CreatePost = (props) => {
     if (postData && content) {
       if (image)
         uploadImage(image, (imageLink) => {
+          let textToNotify = "Cover image uploded. Now, Creating the post.";
+          notify(textToNotify, { timeout: 3000 });
           createNews(imageLink);
+        }, {
+          onUploadProgress: (progressPercent) => {
+            if (progressPercent === 100) {
+              let textToNotify = "Coverimage is being processed at the server";
+              notify(textToNotify, { timeout: 99999 * 99999 });
+            } else {
+              let textToNotify = "Uploading cover image to server: " + progressPercent;
+              notify(textToNotify, { timeout: 99999 * 99999 });
+            }
+          }
         });
       else createNews();
     } else if (postData === "") {
@@ -276,7 +288,7 @@ export const CreatePost = (props) => {
                       if (audioLink !== undefined) {
                         callback(audioLink);
                         let textToNotify = "File Uploaded Successfuly";
-                        notify(textToNotify, {timeout:3000});
+                        notify(textToNotify, { timeout: 3000 });
                       }
                     }, {
                       onUploadProgress: (progressPercent) => {

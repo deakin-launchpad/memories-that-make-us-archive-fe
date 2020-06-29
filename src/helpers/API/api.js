@@ -112,7 +112,7 @@ class API {
       headers: {
         authorization: 'Bearer ' + AccessToken
       },
-      onUploadProgress: (progressEvent) => onUploadProgress(Math.round((progressEvent.loaded * 100) / progressEvent.total))
+      onUploadProgress: onUploadProgress !== undefined && onUploadProgress instanceof Function ? (progressEvent) => onUploadProgress(Math.round((progressEvent.loaded * 100) / progressEvent.total)) : () => { }
 
     }).then(response => {
       return callback(response.data.data.imageFileURL.original);
@@ -127,7 +127,8 @@ class API {
       headers: {
         authorization: 'Bearer ' + AccessToken
       },
-      onUploadProgress: (progressEvent) => onUploadProgress(Math.round((progressEvent.loaded * 100) / progressEvent.total))
+      onUploadProgress: onUploadProgress !== undefined && onUploadProgress instanceof Function ? (progressEvent) => onUploadProgress(Math.round((progressEvent.loaded * 100) / progressEvent.total)) : () => { }
+
     }).then(response => {
       let uploadedVideoLink = response.data.data.videoFileURL.uploadedVideo;
       let uploadedVideoThumbnail = response.data.data.videoFileURL.thumbnail;
@@ -144,7 +145,7 @@ class API {
       headers: {
         authorization: 'Bearer ' + AccessToken
       },
-      onUploadProgress: (progressEvent) => onUploadProgress(Math.round((progressEvent.loaded * 100) / progressEvent.total))
+      onUploadProgress: onUploadProgress !== undefined && onUploadProgress instanceof Function ? (progressEvent) => onUploadProgress(Math.round((progressEvent.loaded * 100) / progressEvent.total)) : () => { }
     }).then(response => {
       return callback(response.data.data.audioFile.original);
     }).catch(error => {
