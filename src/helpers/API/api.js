@@ -134,7 +134,7 @@ class API {
     }).then(response => {
       let uploadedVideoLink = response.data.data.videoFileURL.uploadedVideo;
       let uploadedVideoThumbnail = response.data.data.videoFileURL.thumbnail;
-      let width = response.data.data.videoFileURL.metadata.maxWidth;
+      let width = response.data.data.videoFileURL.metadata.maxHeight;
       return callback(uploadedVideoLink, uploadedVideoThumbnail, width);
     }).catch(error => {
       errorHelper(error);
@@ -190,8 +190,11 @@ class API {
       headers: {
         authorization: 'Bearer ' + AccessToken
       }
-    }).then(() => {
-      callback(true);
+    }).then((response) => {
+      if (response.data.videos.length > 0)
+        if (response.data.videos[0]['videos'] !== undefined)
+          callback(response.data.videos[0]['videos']);
+      callback([]);
     }).catch(error => errorHelper(error));
   }
 
