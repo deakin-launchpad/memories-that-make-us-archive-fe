@@ -190,11 +190,8 @@ class API {
       headers: {
         authorization: 'Bearer ' + AccessToken
       }
-    }).then((response) => {
-      if (response.data.videos.length > 0)
-        if (response.data.videos[0]['videos'] !== undefined)
-          callback(response.data.videos[0]['videos']);
-      callback([]);
+    }).then(() => {
+      callback(true);
     }).catch(error => errorHelper(error));
   }
 
@@ -203,8 +200,11 @@ class API {
       headers: {
         authorization: 'Bearer ' + AccessToken
       }
-    }).then(() => {
-      callback(true);
+    }).then((response) => {
+      if (response.data.data.videos.length > 0)
+        if (response.data.data.videos[0]['videos'] !== undefined)
+          callback(response.data.data.videos[0]);
+      callback([]);
     }).catch(error => errorHelper(error));
   }
 
