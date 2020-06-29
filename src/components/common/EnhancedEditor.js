@@ -54,7 +54,6 @@ export const EnhancedEditor = (props) => {
     file_picker_callback: props.imageUpload === undefined ? null : (callback, value, meta) => {
       var input = document.createElement('input');
       input.setAttribute('type', 'file');
-      console.log(meta.filetype);
       switch (meta.filetype) {
       case "media":
         input.setAttribute('accept', "video/*,audio/*");

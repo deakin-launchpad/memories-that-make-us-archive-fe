@@ -79,7 +79,6 @@ export const DisplayBrowserNotification = (message) => {
 export const notify = (message, options) => {
   if (options) {
     let { timeout, callback, variant } = options;
-    console.log("setting notificaiton timeout to ", timeout);
     notificationTimeOut = timeout;
     if (variant === 'browser')
       DisplayBrowserNotification(message);
