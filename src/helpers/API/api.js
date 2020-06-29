@@ -106,7 +106,8 @@ class API {
     });
   }
 
-  uploadImage = (data, callback, { onUploadProgress }) => {
+  uploadImage = (data, callback, optional) => {
+    const { onUploadProgress } = optional !== undefined ? optional : { onUploadProgress: () => { } };
     axiosInstance.post('/upload/uploadImage', data, {
       timeout: Number.POSITIVE_INFINITY,
       headers: {
@@ -121,7 +122,8 @@ class API {
     });
   }
 
-  uploadVideo = (data, callback, { onUploadProgress }) => {
+  uploadVideo = (data, callback, optional) => {
+    const { onUploadProgress } = optional !== undefined ? optional : { onUploadProgress: () => { } };
     axiosInstance.post('/upload/uploadVideo', data, {
       timeout: Number.POSITIVE_INFINITY,
       headers: {
@@ -139,7 +141,8 @@ class API {
     });
   }
 
-  uploadAudio = (data, callback, { onUploadProgress }) => {
+  uploadAudio = (data, callback, optional) => {
+    const { onUploadProgress } = optional !== undefined ? optional : { onUploadProgress: () => { } };
     axiosInstance.post('/upload/uploadAudio', data, {
       timeout: Number.POSITIVE_INFINITY,
       headers: {
