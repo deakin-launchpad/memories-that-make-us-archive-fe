@@ -8,6 +8,7 @@ import Plyr from 'react-plyr';
 
 const VideoStoryCard = ({ storyId, title, description, thumbnail, videos, reloadData }) => {
 
+  const [internalVideos, setInternalVideos] = useState();
   const [titleForTextFeild, setTitle] = useState();
   const [descriptionForTextFeild, setDescription] = useState();
 
@@ -26,6 +27,7 @@ const VideoStoryCard = ({ storyId, title, description, thumbnail, videos, reload
 
   useEffect(() => {
     if (videos !== undefined) {
+      setInternalVideos(videos);
       let temp = [];
       let qualaties = [];
       videos.forEach(video => {
@@ -69,7 +71,7 @@ const VideoStoryCard = ({ storyId, title, description, thumbnail, videos, reload
     <List dense={true}>
       <ListSubheader />
       {
-        videos.map(video => {
+        internalVideos !== undefined ? (internalVideos.length > 0 ? internalVideos.map(video => {
           return <ListItem key={Math.random()} alignItems="flex-start">
             <ListItemText primary={`Quality : ${video.width}`} secondary={video.link} />
             <ListItemSecondaryAction>
@@ -79,15 +81,18 @@ const VideoStoryCard = ({ storyId, title, description, thumbnail, videos, reload
                     storyId,
                     videoId: video._id
                   };
-                  API.deleteVideoFromExistingVideoStory(data, () => {
-                    notify("deleted");
-                    reloadData();
+                  API.deleteVideoFromExistingVideoStory(data, (response) => {
+                    if (response) {
+                      notify("Deleted");
+                      let temp = internalVideos.filter(videoX => videoX._id !== video._id);
+                      setInternalVideos(temp);
+                    }
                   });
                 }}
               ><i className="material-icons" style={{ color: "red" }}>delete</i></IconButton>
             </ListItemSecondaryAction>
           </ListItem>;
-        })
+        }) : null) : <LoadingScreen />
       }
     </List>
   </Container >);
@@ -120,7 +125,9 @@ const VideoStoryCard = ({ storyId, title, description, thumbnail, videos, reload
         },
         onClose: () => {
           setEditModalIsOpen(false);
-        }
+        },
+        submitButtonName: "Save",
+        closeButtonName: "Cancel"
       }} />
     <EnhancedModal isOpen={editVideosIsOpen}
       dialogTitle={<Grid container justify="space-around">
@@ -148,7 +155,8 @@ const VideoStoryCard = ({ storyId, title, description, thumbnail, videos, reload
                     if (response) {
                       let textToNotify = "File Uploaded Successfuly";
                       notify(textToNotify, { timeout: 3000 });
-                      reloadData();
+                      if (response.videos !== undefined)
+                        setInternalVideos(response.videos);
                     }
                   });
                 }, {
@@ -174,7 +182,10 @@ const VideoStoryCard = ({ storyId, title, description, thumbnail, videos, reload
       options={{
         onClose: () => {
           setEditVideosIsOpen(false);
-        }
+          reloadData();
+        },
+        disableSubmit: true,
+        disableClose: true
       }} />
     <Menu
       id="simple-menu"
@@ -220,7 +231,7 @@ const VideoStoryCard = ({ storyId, title, description, thumbnail, videos, reload
           }}
         /> : <center> <br /><Button onClick={() => {
           setEditVideosIsOpen(true);
-        }}>Manage Videos</Button></center>}
+        }}>Add Videos</Button></center>}
       </CardContent>
     </Card >
   </div>
