@@ -4,7 +4,6 @@ import { Container, Card, CardHeader, CardContent, IconButton, Grid, Menu, MenuI
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 
 import { LoadingScreen, EnhancedModal, notify } from 'components';
-import Plyr from 'react-plyr';
 
 const VideoStoryCard = ({ storyId, title, description, thumbnail, videos, reloadData }) => {
 
@@ -16,9 +15,6 @@ const VideoStoryCard = ({ storyId, title, description, thumbnail, videos, reload
   const [editModalIsOpen, setEditModalIsOpen] = useState(false);
   const [editVideosIsOpen, setEditVideosIsOpen] = useState(false);
 
-  const [preparedSources, setPreparedSources] = useState();
-  const [qualaties, setQualaties] = useState([]);
-
 
   useEffect(() => {
     setTitle(title);
@@ -28,19 +24,6 @@ const VideoStoryCard = ({ storyId, title, description, thumbnail, videos, reload
   useEffect(() => {
     if (videos !== undefined) {
       setInternalVideos(videos);
-      let temp = [];
-      let qualaties = [];
-      videos.forEach(video => {
-        qualaties.push(video.width.toString());
-        temp.push({
-          src: video.link,
-          size: video.width.toString(),
-          type: "video/mp4",
-          label: `${video.width}p`
-        });
-      });
-      setQualaties(qualaties);
-      setPreparedSources(temp);
     }
   }, [videos]);
 
@@ -77,17 +60,18 @@ const VideoStoryCard = ({ storyId, title, description, thumbnail, videos, reload
             <ListItemSecondaryAction>
               <IconButton
                 onClick={() => {
-                  let data = {
-                    storyId,
-                    videoId: video._id
-                  };
-                  API.deleteVideoFromExistingVideoStory(data, (response) => {
-                    if (response) {
-                      notify("Deleted");
-                      let temp = internalVideos.filter(videoX => videoX._id !== video._id);
-                      setInternalVideos(temp);
-                    }
-                  });
+                  setInternalVideos([]);
+                  // let data = {
+                  //   storyId,
+                  //   videoId: video._id
+                  // };
+                  // API.deleteVideoFromExistingVideoStory(data, (response) => {
+                  //   if (response) {
+                  //     notify("Deleted");
+                  //     let temp = internalVideos.filter(videoX => videoX._id !== video._id);
+                  //     setInternalVideos(temp);
+                  //   }
+                  // });
                 }}
               ><i className="material-icons" style={{ color: "red" }}>delete</i></IconButton>
             </ListItemSecondaryAction>
@@ -220,18 +204,19 @@ const VideoStoryCard = ({ storyId, title, description, thumbnail, videos, reload
       } />
       <CardContent>
         {description}
-        {videos.length > 0 ? <Plyr
-          type="video"
-          poster={thumbnail}
-          sources={preparedSources}
-          title={title}
-          quality={{
-            default: qualaties[qualaties.length - 1],
-            options: qualaties
-          }}
-        /> : <center> <br /><Button onClick={() => {
-          setEditVideosIsOpen(true);
-        }}>Add Videos</Button></center>}
+        {
+          //TODO: Replace with a proper player or add resolution switcher with a select tag for resolution
+          internalVideos !== undefined && internalVideos.length > 0 ? <><br /><video controls >
+            {
+              internalVideos.map((source, i) =>
+                <source src={source.link} type="video/mp4" key={storyId + "_source_" + i} />
+              )
+            }
+          Your browser does not support the video tag.
+          </video></>
+            : <center> <br /><Button onClick={() => {
+              setEditVideosIsOpen(true);
+            }}>Add Videos</Button></center>}
       </CardContent>
     </Card >
   </div>
