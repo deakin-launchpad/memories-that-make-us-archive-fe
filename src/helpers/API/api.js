@@ -5,6 +5,7 @@ import { axiosInstance } from '../index';
  *  @errorHelper :  Function to return error StatusText.
  */
 const errorHelper = (error, variant) => {
+  console.log(error);
   if (error.response === undefined) {
     notify("Network Error");
     logout();
