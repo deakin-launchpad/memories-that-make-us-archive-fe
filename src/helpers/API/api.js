@@ -87,8 +87,7 @@ class API {
         authorization: 'Bearer ' + AccessToken
       }
     }).then(() => {
-      notify("News Published");
-      window.location.reload();
+      notify("Memory Created");
     }).catch(error => {
       errorHelper(error);
     });

@@ -77,9 +77,9 @@ export const CreatePost = (props) => {
       if (postData)
         Object.assign(dataToSend, { title: postData });
       if (date)
-        Object.assign(dataToSend, { title: postData });
+        Object.assign(dataToSend, { date: date });
       if (region)
-        Object.assign(dataToSend, { title: postData });
+        Object.assign(dataToSend, { region: region });
       if (content)
         Object.assign(dataToSend, { content: content });
       if (categories) {
