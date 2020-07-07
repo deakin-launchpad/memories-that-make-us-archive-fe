@@ -253,10 +253,10 @@ export const CreatePost = (props) => {
                     }, {
                       onUploadProgress: (progressPercent) => {
                         if (progressPercent === 100) {
-                          let textToNotify = "Audio is being processed at the server";
+                          let textToNotify = "Image is being processed at the server";
                           notify(textToNotify, { timeout: 99999 * 99999 });
                         } else {
-                          let textToNotify = "Uploading audio to server: " + progressPercent;
+                          let textToNotify = "Uploading image to server: " + progressPercent;
                           notify(textToNotify, { timeout: 99999 * 99999 });
                         }
                       },
