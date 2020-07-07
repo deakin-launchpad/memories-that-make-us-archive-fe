@@ -69,8 +69,10 @@ export const EnhancedEditor = (props) => {
       }
       input.onchange = function () {
         if (props.imageUpload.function instanceof Function) {
-          props.imageUpload.function(this.files, (responseImageLink, { title, poster }) => {
-            callback(responseImageLink, { title: title ? title : Math.random(), poster: poster ? poster : null });
+          props.imageUpload.function(this.files, (responseImageLink, extras) => {
+            if (extras === undefined)
+              return callback(responseImageLink);
+            callback(responseImageLink, { title: extras.title !== undefined ? extras.title : Math.random(), poster: extras.poster !== undefined ? extras.poster : null });
           });
         }
       };
