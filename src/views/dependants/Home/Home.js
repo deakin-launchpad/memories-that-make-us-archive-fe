@@ -28,6 +28,11 @@ const useStyles = makeStyles({
   },
 });
 
+function formatTime(time) {
+  let newTime = new Date(time);
+  return typeof newTime === "object" ? newTime.toLocaleDateString("en-US") : newTime;
+}
+
 export const Home = () => {
   const classes = useStyles();
   const { setHeaderElements, pageTitle } = useContext(LayoutContext);
@@ -192,6 +197,14 @@ export const Home = () => {
                   <Typography gutterBottom variant="h6" component="h4">
                     {article.title}
                   </Typography>
+
+                  {article.category.length > 0 && <Typography gutterBottom variant="body1">
+                    Categories : {article.category.map((cat, i) => i === article.category.length - 1 ? <span key={"cat" + i} >{cat}</span> : <span key={"cat" + i} >{cat},</span>)}
+                  </Typography>}
+
+                  <Typography gutterBottom variant="subtitle">
+                    Posted on {formatTime(article.date)}
+                  </Typography>
                   <Typography variant="body2" color="textSecondary" component="p" dangerouslySetInnerHTML={{ __html: article.content }} >
                   </Typography>
                 </CardContent>
@@ -237,6 +250,6 @@ export const Home = () => {
           </Grid>
         ))}
       </Grid>
-    </Grid>
+    </Grid >
   );
 };
