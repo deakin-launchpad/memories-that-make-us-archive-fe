@@ -4,11 +4,16 @@ import { axiosInstance } from '../index';
 /**
  *  @errorHelper :  Function to return error StatusText.
  */
+
+const logoutOnNetworkError = false;
+
+
 const errorHelper = (error, variant) => {
   console.log(error);
   if (error.response === undefined) {
     notify("Network Error");
-    logout();
+    if (logoutOnNetworkError)
+      logout();
     return false;
   }
   if (error.response.statusCode === 401) {
