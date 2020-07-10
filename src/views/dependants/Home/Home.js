@@ -28,6 +28,11 @@ const useStyles = makeStyles({
   },
 });
 
+function formatTime(time) {
+  let newTime = new Date(time);
+  return typeof newTime === "object" ? newTime.toLocaleDateString("en-US") : newTime;
+}
+
 export const Home = () => {
   const classes = useStyles();
   const { setHeaderElements, pageTitle } = useContext(LayoutContext);
@@ -183,14 +188,22 @@ export const Home = () => {
           <Grid item xs={12} xl={3} lg={5} md={4} sm={5} key={i} >
             <Card className={classes.card}>
               <CardActionArea >
-                <CardMedia
+                {article.media[0] !== undefined && article.media[0].thumbnail !== undefined && <CardMedia
                   className={classes.media}
                   image={article.media[0].thumbnail}
                   title={article.title}
-                />
+                />}
                 <CardContent >
                   <Typography gutterBottom variant="h6" component="h4">
                     {article.title}
+                  </Typography>
+
+                  {article.category.length > 0 && <Typography gutterBottom variant="body1">
+                    Categories : {article.category.map((cat, i) => i === article.category.length - 1 ? <span key={"cat" + i} >{cat}</span> : <span key={"cat" + i} >{cat},</span>)}
+                  </Typography>}
+
+                  <Typography gutterBottom variant="subtitle">
+                    Posted on {formatTime(article.date)}
                   </Typography>
                   <Typography variant="body2" color="textSecondary" component="p" dangerouslySetInnerHTML={{ __html: article.content }} >
                   </Typography>
@@ -237,6 +250,6 @@ export const Home = () => {
           </Grid>
         ))}
       </Grid>
-    </Grid>
+    </Grid >
   );
 };

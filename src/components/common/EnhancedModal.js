@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@material-ui/core';
 /**
 * 17/09/2019 : Options for actionsButtons are moved inside options
@@ -26,7 +27,7 @@ export const EnhancedModal = (props) => {
   const [cancelButtonName, setCancelButtonName] = useState('Close');
   const [disableSubmit, setDisableSubmit] = useState(false);
   const [disableClose, setDisableClose] = useState(false);
-  const [swapButtonColors, setSwapButtonColors] = useState(false)
+  const [swapButtonColors, setSwapButtonColors] = useState(false);
   useEffect(() => {
     if (props.isOpen) {
       setIsOpen(true);
@@ -89,4 +90,19 @@ export const EnhancedModal = (props) => {
     </Dialog>
   );
   return content;
-}
+};
+
+EnhancedModal.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  dialogTitle: PropTypes.node.isRequired,
+  dialogContent: PropTypes.node.isRequired,
+  options: PropTypes.shape({
+    submitButtonName: PropTypes.string,
+    closeButtonName: PropTypes.string,
+    disableSubmit: PropTypes.bool,
+    disableClose: PropTypes.bool,
+    onClose: PropTypes.func,
+    onSubmit: PropTypes.func,
+    swapButtonColors: PropTypes.bool
+  })
+};

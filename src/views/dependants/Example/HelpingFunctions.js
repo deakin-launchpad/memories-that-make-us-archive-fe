@@ -11,8 +11,30 @@ import ChatBubbleOutlineOutlinedIcon from '@material-ui/icons/ChatBubbleOutlineO
 import ThumbUpOutlinedIcon from '@material-ui/icons/ThumbUpOutlined';
 import { red, green, indigo, blue, teal, deepOrange, purple, lightBlue, lightGreen, orange, blueGrey } from '@material-ui/core/colors';
 
+var checkFileExtension = function (fileName) {
+  return fileName.substring(fileName.lastIndexOf('.') + 1, fileName.length) || fileName;
+};
+
+const validateExtension = (fileName, type) => {
+  const VALID_FILE_EXTENSIONS = {
+    VIDEO: ["mp4", "avi", "mov", "wmv", "webm"],
+    AUDIO: ["mp3", "ogg", "wav"],
+    DOCS: [],
+    IMAGE: ["png", "jpeg", "jpg"]
+  };
+  switch (type.toLowerCase()) {
+  case "video": return VALID_FILE_EXTENSIONS.VIDEO.includes(checkFileExtension(fileName));
+  case "audio": return VALID_FILE_EXTENSIONS.AUDIO.includes(checkFileExtension(fileName));
+  case "image": return VALID_FILE_EXTENSIONS.IMAGE.includes(checkFileExtension(fileName));
+  default: return false;
+  }
+};
+
 export const CreatePost = (props) => {
   const [postData, setPostData] = useState("");
+  const [categories, setCategories] = useState("");
+  const [date, setDate] = useState("");
+  const [region, setRegion] = useState("");
   const [image, setImage] = useState('');
   const [imageLocalLink, setLocalLink] = useState('');
   const [uname, setUname] = useState();
@@ -48,44 +70,77 @@ export const CreatePost = (props) => {
 
   const uploadPost = () => {
 
-    if (postData && image) {
-      uploadImage(image, (imageLink) => {
-        let dataToSend = {
-          "date": Date.now().toString(),
-        };
-        if (postData)
-          Object.assign(dataToSend, { title: postData });
+    const prepareDataForSending = (imageLink) => {
+      let dataToSend = {
+      };
+      let cat = [];
+      if (postData)
+        Object.assign(dataToSend, { title: postData });
+      if (date)
+        Object.assign(dataToSend, { date: date });
+      if (region)
+        Object.assign(dataToSend, { region: region });
+      if (content)
         Object.assign(dataToSend, { content: content });
-        if (imageLink)
-          Object.assign(dataToSend, {
-            media: [{
-              "link": imageLink,
-              "thumbnail": imageLink,
-              "type": "IMAGE"
-            }]
-          });
-        API.createNews(dataToSend, () => {
-          URL.revokeObjectURL(imageLocalLink);
-          resetPoster();
-          if (props.reload instanceof Function)
-            props.reload();
+      if (categories) {
+        cat = categories.split(",");
+        Object.assign(dataToSend, { category: cat });
+      }
+      if (imageLink)
+        Object.assign(dataToSend, {
+          media: [{
+            "link": imageLink,
+            "thumbnail": imageLink,
+            "type": "IMAGE"
+          }]
         });
+      return dataToSend;
+    };
+
+    const createNews = (imageLink) => {
+      API.createNews(prepareDataForSending(imageLink), () => {
+        if (imageLink)
+          URL.revokeObjectURL(imageLocalLink);
+        resetPoster();
+        if (props.reload instanceof Function)
+          props.reload();
       });
+    };
+    if (postData && content) {
+      if (image)
+        uploadImage(image, (imageLink) => {
+          let textToNotify = "Cover image uploded. Now, Creating the post.";
+          notify(textToNotify, { timeout: 3000 });
+          createNews(imageLink);
+        }, {
+          onUploadProgress: (progressPercent) => {
+            if (progressPercent === 100) {
+              let textToNotify = "Coverimage is being processed at the server";
+              notify(textToNotify, { timeout: 99999 * 99999 });
+            } else {
+              let textToNotify = "Uploading cover image to server: " + progressPercent;
+              notify(textToNotify, { timeout: 99999 * 99999 });
+            }
+          }
+        });
+      else createNews();
     } else if (postData === "") {
       notify("Title is required");
-    } else if (image === "") {
-      notify("Image is required");
-    } else notify('nothing to upload');
+    } else if (content === "") {
+      notify("Memory content is required");
+    } else notify('Title and Content required');
   };
   return (<Card style={{ width: '100%' }}>
     <CardContent>
       <input type="file" id="fileupload" multiple accept="image/*" style={{ display: 'none' }} onChange={(e) => {
-        let localUrl = URL.createObjectURL(e.target.files[0]);
-        setImage(e.target.files[0]);
-        setLocalLink(localUrl);
+        if (e.target.files[0] !== undefined) if (e.target.files[0] !== null) {
+          let localUrl = URL.createObjectURL(e.target.files[0]);
+          setImage(e.target.files[0]);
+          setLocalLink(localUrl);
+        }
       }} />
-      <Grid container spacing={2}>
-        <Grid item xs={12}>
+      <Grid container spacing={2} justify="center">
+        <Grid item xs={12} md={8}>
           <TextField multiline fullWidth
             value={postData}
             onChange={(e) => { setPostData(e.target.value); }}
@@ -130,7 +185,6 @@ export const CreatePost = (props) => {
                       edge="end"
                       color='secondary'
                       onClick={() => {
-                        console.log(content);
                         uploadPost();
                       }}
                     >
@@ -141,7 +195,7 @@ export const CreatePost = (props) => {
             }} />
         </Grid>
         {imageLocalLink &&
-          <Grid item xs={12} >
+          <Grid item xs={12} md={8} >
             <Image src={imageLocalLink} />
             <Button onClick={() => {
               URL.revokeObjectURL(imageLocalLink);
@@ -151,7 +205,31 @@ export const CreatePost = (props) => {
             }>Remove Image</Button>
           </Grid>
         }
-        <Grid item xs={12}>
+        <Grid item xs={12} md={8}>
+          <TextField fullWidth
+            value={categories}
+            onChange={(e) => { setCategories(e.target.value); }}
+            variant={'outlined'}
+            placeholder="Categories (seperate by ,)"
+            color='primary' />
+        </Grid>
+        <Grid item xs={12} md={8}>
+          <TextField fullWidth
+            value={date}
+            onChange={(e) => { setDate(e.target.value); }}
+            variant={'outlined'}
+            placeholder="Date"
+            color='primary' />
+        </Grid>
+        <Grid item xs={12} md={8}>
+          <TextField fullWidth
+            value={region}
+            onChange={(e) => { setRegion(e.target.value); }}
+            variant={'outlined'}
+            placeholder="Region"
+            color='primary' />
+        </Grid>
+        <Grid item xs={12} md={8}>
           <Box border={1} style={{ paddingLeft: "10px", paddingRight: "10px", paddingTop: "10px", borderRadius: "10px", paddingBottom: "10px" }}>
             <InputLabel style={{ paddingBottom: "5px" }} >
               Memory
@@ -159,12 +237,73 @@ export const CreatePost = (props) => {
             <EnhancedEditor content={content} id={'textEditor'}
               getContent={(content) => setContent(content)}
               imageUpload={{
+                fileTypes: "*",
                 function: (files, callback) => {
+                  let fileName = files[0].name;
                   let formData = new FormData();
-                  formData.append('imageFile', files[0]);
-                  API.uploadImage(formData, (imageLink) => {
-                    callback(imageLink);
-                  });
+                  let type = files[0].type.split("/").shift();
+                  switch (type) {
+                  case "image":
+                    if (!validateExtension(fileName, "image")) return notify("Unsupported File Selected");
+                    formData.append('imageFile', files[0]);
+                    API.uploadImage(formData, (imageLink) => {
+                      callback(imageLink);
+                      let textToNotify = "File Uploaded Successfuly";
+                      notify(textToNotify, { timeout: 3000 });
+                    }, {
+                      onUploadProgress: (progressPercent) => {
+                        if (progressPercent === 100) {
+                          let textToNotify = "Image is being processed at the server";
+                          notify(textToNotify, { timeout: 99999 * 99999 });
+                        } else {
+                          let textToNotify = "Uploading image to server: " + progressPercent;
+                          notify(textToNotify, { timeout: 99999 * 99999 });
+                        }
+                      },
+                    });
+                    break;
+                  case "video":
+                    if (!validateExtension(fileName, "video")) return notify("Unsupported File Selected");
+                    formData.append('videoFile', files[0]);
+                    API.uploadVideo(formData, (videoLink, thumbnail) => {
+                      callback(videoLink, { poster: thumbnail });
+                      let textToNotify = "File Uploaded Successfuly";
+                      notify(textToNotify, { timeout: 3000 });
+                    }, {
+                      onUploadProgress: (progressPercent) => {
+                        if (progressPercent === 100) {
+                          let textToNotify = "Video is being processed at the server";
+                          notify(textToNotify, { timeout: null });
+                        } else {
+                          let textToNotify = "Uploading video to server: " + progressPercent;
+                          notify(textToNotify, { timeout: null });
+                        }
+                      },
+                    });
+                    break;
+                  case "audio":
+                    if (!validateExtension(fileName, "audio")) return notify("Unsupported File Selected");
+                    formData.append('audioFile', files[0]);
+                    API.uploadAudio(formData, (audioLink) => {
+                      if (audioLink !== undefined) {
+                        callback(audioLink);
+                        let textToNotify = "File Uploaded Successfuly";
+                        notify(textToNotify, { timeout: 3000 });
+                      }
+                    }, {
+                      onUploadProgress: (progressPercent) => {
+                        if (progressPercent === 100) {
+                          let textToNotify = "Audio is being processed at the server";
+                          notify(textToNotify, { timeout: null });
+                        } else {
+                          let textToNotify = "Uploading audio to server: " + progressPercent;
+                          notify(textToNotify, { timeout: null });
+                        }
+                      }
+                    });
+                    break;
+                  default: return notify("invalid file selected");
+                  }
                 }
               }} />
           </Box>
@@ -175,7 +314,7 @@ export const CreatePost = (props) => {
 };
 
 CreatePost.propTypes = {
-  userName: PropTypes.string.isRequired,
+  userName: PropTypes.string,
   reload: PropTypes.func,
   userImage: PropTypes.string
 };

@@ -50,15 +50,29 @@ export const EnhancedEditor = (props) => {
   let initObj = {
     menubar: false,
     height, plugins, removed_menuitems, content_css, image_advtab: true, toolbar1, toolbar2,
-    file_picker_types: 'file image media', images_reuse_filename: true,
-    file_picker_callback: props.imageUpload === undefined ? null : (callback) => {
+    file_picker_types: 'image media', images_reuse_filename: true,
+    file_picker_callback: props.imageUpload === undefined ? null : (callback, value, meta) => {
       var input = document.createElement('input');
       input.setAttribute('type', 'file');
-      input.setAttribute('accept', typeof props.imageUpload.fileTypes === 'string' ? props.imageUpload.fileTypes : '*');
+      switch (meta.filetype) {
+      case "media":
+        input.setAttribute('accept', "video/*,audio/*");
+        break;
+      case "image":
+        input.setAttribute('accept', "image/*");
+        break;
+      case "file":
+        input.setAttribute('accept', typeof props.imageUpload.fileTypes === 'string' ? props.imageUpload.fileTypes : '*');
+        break;
+      default:
+        input.setAttribute('accept', typeof props.imageUpload.fileTypes === 'string' ? props.imageUpload.fileTypes : '*');
+      }
       input.onchange = function () {
         if (props.imageUpload.function instanceof Function) {
-          props.imageUpload.function(this.files, (responseImageLink, title) => {
-            callback(responseImageLink, { title: title ? title : Math.random() });
+          props.imageUpload.function(this.files, (responseImageLink, extras) => {
+            if (extras === undefined)
+              return callback(responseImageLink);
+            callback(responseImageLink, { title: extras.title !== undefined ? extras.title : Math.random(), poster: extras.poster !== undefined ? extras.poster : null });
           });
         }
       };
