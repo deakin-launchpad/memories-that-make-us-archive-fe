@@ -13,6 +13,7 @@ import { DevModeConfig } from 'configurations';
 
 
 const App = (props) => {
+  console.log("trigger master");
   useEffect(() => {
     document.title = process.env.REACT_APP_NAME;
   }, []);
