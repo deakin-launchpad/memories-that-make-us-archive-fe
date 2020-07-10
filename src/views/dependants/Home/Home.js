@@ -1,23 +1,37 @@
 import React, { useEffect, useContext, useState } from 'react';
-import { Grid, Typography, makeStyles, Card, CardActionArea, CardMedia, CardActions, CardContent, Button, TextField, MenuItem, Slider, IconButton, Fab, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@material-ui/core';
+import { Grid, Typography, makeStyles, Card, CardActionArea, CardMedia, CardActions, CardContent, Button, TextField, MenuItem, Slider, IconButton, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
-import EditIcon from '@material-ui/icons/Edit';
+// import EditIcon from '@material-ui/icons/Edit';
 import { HeaderElements } from 'components';
 import { LayoutContext } from 'contexts';
 import { API } from 'helpers/index';
-import { EnhancedDrawer } from 'components';
+// import { EnhancedDrawer } from 'components';
 
 const useStyles = makeStyles({
   card: {
-    maxWidth: 330,
-    maxHeight: 600,
+    // maxWidth: 30,
+    maxHeight: 450,
+    width: '100%',
     height: '100%',
     margin: 16,
+    position: 'relative',
+    overflow: 'auto'
   },
   media: {
     height: 140,
   },
+  cardButton: {
+    position: 'relative',
+    // top: 450,
+    bottom: 2,
+    // top: theme.spacing.unit * 2
+  },
 });
+
+function formatTime(time) {
+  let newTime = new Date(time);
+  return typeof newTime === "object" ? newTime.toLocaleDateString("en-US") : newTime;
+}
 
 export const Home = () => {
   const classes = useStyles();
@@ -27,15 +41,46 @@ export const Home = () => {
   const [category, setCategory] = useState('');
   const [numberOfRecords, setNumberOfRecords] = useState(10);
   const [open, setOpen] = React.useState(false);
-  const [bottomDrawerStatus, setBottomDrawerStatus] = useState(false);
+  // const [bottomDrawerStatus, setBottomDrawerStatus] = useState(false);
+  const [selectedNewsId, setSelectedNewsId] = useState('');
+  const [search, setSearch] = useState('');
+  const [currentPageNumber, setCurrentPageNumber] = useState(1);
+  // const [drawerContent, setDrawerContent] = useState('');
   useEffect(() => {
     if (category === 'All') {
       setCategory('');
     }
-    API.getNews({ category: category, numberOfRecords: numberOfRecords }, setArticles);
-  }, [category, numberOfRecords])
+    if (currentPageNumber === '') {
+      API.getNews({ numberOfRecords: numberOfRecords, currentPageNumber: 1 }, setArticles);
+    }
+    else {
+      API.getNews({ numberOfRecords: numberOfRecords, currentPageNumber: currentPageNumber }, setArticles);
+    }
+  }, [category, numberOfRecords, currentPageNumber]);
 
-  const handleClickOpen = () => {
+  useEffect(() => {
+    if (search !== '') {
+      if (currentPageNumber === '') {
+        API.getNewsBySearch({ title: search, numberOfRecords: numberOfRecords, currentPageNumber: 1 }, setArticles);
+      }
+      else {
+        API.getNewsBySearch({ title: search, numberOfRecords: numberOfRecords, currentPageNumber: currentPageNumber }, setArticles);
+      }
+    }
+    else {
+      if (category === 'All') {
+        setCategory('');
+      }
+      if (currentPageNumber === '') {
+        API.getNews({ numberOfRecords: numberOfRecords, currentPageNumber: 1 }, setArticles);
+      }
+      else {
+        API.getNews({ numberOfRecords: numberOfRecords, currentPageNumber: currentPageNumber }, setArticles);
+      }
+    }
+  }, [search, category, numberOfRecords, currentPageNumber]);
+  const handleClickOpen = (data) => {
+    setSelectedNewsId(data);
     setOpen(true);
   };
 
@@ -43,31 +88,32 @@ export const Home = () => {
     setOpen(false);
   };
 
-  const handleDelete = (data) => {
-    API.deleteNews(data)
+  const handleDelete = () => {
+    API.deleteNews(selectedNewsId);
     setOpen(false);
   };
 
   useEffect(() => {
     API.getCategories(handleCategory);
-  }, [])
+  }, []);
 
   const handleCategory = (data) => {
     let temp = ['All'];
     data.forEach(element => {
       temp.push(element);
     });
-    setCategories(temp)
-  }
+    setCategories(temp);
+  };
   function valuetext(value) {
-    setNumberOfRecords(value)
+    setNumberOfRecords(value);
     return `${value}`;
   }
 
-  function handleContent(data) {
-    return <Typography variant="body2" color="textSecondary" component="p" dangerouslySetInnerHTML={{ __html: data }}>
-    </Typography>
-  }
+  // function handleContent(data) {
+  //   setDrawerContent(<Typography variant="body2" color="textSecondary" component="p" dangerouslySetInnerHTML={{ __html: data }}>
+  //   </Typography>);
+  //   setBottomDrawerStatus(true);
+  // }
   const handleChange = event => {
     setCategory(event.target.value);
   };
@@ -103,7 +149,7 @@ export const Home = () => {
         <Grid item xs={'auto'} xl={'auto'} lg={'auto'} md={'auto'} sm={'auto'}>
           <Typography id="discrete-slider" gutterBottom>
             Select Top results
-        </Typography>
+          </Typography>
           <Slider
             defaultValue={10}
             getAriaValueText={valuetext}
@@ -115,43 +161,66 @@ export const Home = () => {
             max={100}
           />
         </Grid>
+        <Grid item xs={'auto'} xl={'auto'} lg={'auto'} md={'auto'} sm={'auto'}>
+          <TextField
+            id='search'
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder='Search...'
+            variant='outlined'
+          >
+          </TextField>
+        </Grid>
+        <Grid item xs={'auto'} xl={'auto'} lg={'auto'} md={'auto'} sm={'auto'}>
+          <TextField
+            id='page'
+            value={currentPageNumber}
+            onChange={(e) => setCurrentPageNumber(e.target.value)}
+            placeholder='Pagenumber'
+            variant='outlined'
+            helperText="Page Number"
+          >
+          </TextField>
+        </Grid>
       </Grid>
       <Grid container justify='flex-start' direction='row' spacing={2}>
-        {articles != null && articles.map((article, i) => (
+        {articles !== null && articles !== undefined && articles.map((article, i) => (
           <Grid item xs={12} xl={3} lg={5} md={4} sm={5} key={i} >
-            <Card className={classes.card} >
-              <CardActionArea onClick={() => { bottomDrawerStatus ? setBottomDrawerStatus(false) : setBottomDrawerStatus(true); }}>
-                <CardMedia
+            <Card className={classes.card}>
+              <CardActionArea >
+                {article.media[0] !== undefined && article.media[0].thumbnail !== undefined && <CardMedia
                   className={classes.media}
-                  image={article.imageURL}
+                  image={article.media[0].thumbnail}
                   title={article.title}
-                />
-                <EnhancedDrawer
-                  anchor={'bottom'}
-                  title={article.title}
-                  content={() => handleContent(article.content)}
-                  isOpen={bottomDrawerStatus}
-                  onClose={() => { setBottomDrawerStatus(false); }} />
-                <CardContent>
+                />}
+                <CardContent >
                   <Typography gutterBottom variant="h6" component="h4">
                     {article.title}
                   </Typography>
-                  <Typography variant="body2" color="textSecondary" component="p" dangerouslySetInnerHTML={{ __html: article.content }}>
+
+                  {article.category.length > 0 && <Typography gutterBottom variant="body1">
+                    Categories : {article.category.map((cat, i) => i === article.category.length - 1 ? <span key={"cat" + i} >{cat}</span> : <span key={"cat" + i} >{cat},</span>)}
+                  </Typography>}
+
+                  <Typography gutterBottom variant="subtitle">
+                    Posted on {formatTime(article.date)}
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary" component="p" dangerouslySetInnerHTML={{ __html: article.content }} >
                   </Typography>
                 </CardContent>
               </CardActionArea>
-              <CardActions>
-                {article.link === "" ? null :
+              <CardActions className={classes.cardButton}>
+                {article.link === undefined || article.link === '' ? null :
                   <a target="_blank" href={article.link.substring(0, 8) === 'https://' ? article.link : 'https://' + article.link} rel="noopener noreferrer">
                     <Button size="small" color="primary"  >
                       Learn More
-                  </Button>
+                    </Button>
                   </a>
                 }
-                <Fab color="primary" size="small" aria-label="add" className={classes.margin}>
+                {/* <Fab color="primary" size="small" aria-label="add" className={classes.margin}>
                   <EditIcon />
-                </Fab>
-                <IconButton aria-label="delete" className={classes.margin} onClick={handleClickOpen}>
+                </Fab> */}
+                <IconButton aria-label="delete" color='primary' style={{ position: 'relative' }} onClick={() => handleClickOpen(article._id)}>
                   <DeleteIcon />
                 </IconButton>
                 <Dialog
@@ -171,7 +240,7 @@ export const Home = () => {
                     <Button autoFocus onClick={handleClose} color="primary">
                       Cancel
                     </Button>
-                    <Button onClick={() => handleDelete(article._id)} color="primary">
+                    <Button onClick={handleDelete} color="primary">
                       Delete
                     </Button>
                   </DialogActions>
@@ -181,6 +250,6 @@ export const Home = () => {
           </Grid>
         ))}
       </Grid>
-    </Grid>
+    </Grid >
   );
 };

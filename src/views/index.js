@@ -7,11 +7,14 @@ import { Register } from './common/Register/Register';
 import { Home } from './dependants/Home/Home';
 import { MobileMenu } from './dependants/mobileMenu/mobileMenu';
 import { Example } from './dependants/Example/Example';
+import { VideoStories } from "./dependants/VideoStories/VideoStories";
+
 export {
   Example,
   Login,
   Register,
   Home,
   MobileMenu,
-  FourOFour
+  FourOFour,
+  VideoStories
 };

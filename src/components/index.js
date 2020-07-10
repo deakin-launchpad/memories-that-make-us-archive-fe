@@ -12,6 +12,9 @@ import { HeaderElements } from './helpers/HeaderElements';
 import { EnhancedEditor } from './common/EnhancedEditor';
 import { EnhancedDrawer } from './common/EnhancedDrawer';
 import { LoginCheck } from './helpers/LoginCheck.js';
+import { VideoCall } from './common/VideoCall';
+import { ConfirmationDailog } from './dependants/ConfirmationDailog';
+
 export {
   EnhancedNotification as Notification,
   notify,
@@ -27,5 +30,7 @@ export {
   HeaderElements,
   EnhancedEditor,
   EnhancedDrawer,
-  LoginCheck
+  LoginCheck,
+  VideoCall,
+  ConfirmationDailog
 };

@@ -1,5 +1,4 @@
 {
-  "headerWelcomeText": "Hello WORLD!",
   "landingPage": "/home",
   "menuItems": [
     {
@@ -7,15 +6,24 @@
       "type": "button",
       "icon": "home",
       "controller": "/home",
-      "customTitle": "LPAD News",
+      "customTitle": "Memorie",
       "isFavourite": true,
       "subMenuItems": []
     },
     {
-      "name": "Example",
+      "name": "Memories",
       "type": "button",
       "icon": "code",
       "controller": "/examples",
+      "customTitle": "Publish",
+      "isFavourite": true,
+      "subMenuItems": []
+    },
+    {
+      "name": "Video Stories",
+      "type": "button",
+      "icon": "code",
+      "controller": "/videoStories",
       "customTitle": "Publish",
       "isFavourite": true,
       "subMenuItems": []
@@ -30,9 +38,15 @@
       "subMenuItems": []
     }
   ],
+  "header": {
+    "visibleOnDesktop": true,
+    "visibleOnMobile": true,
+    "useCustomColor": false,
+    "color": "primary",
+    "customColorCode": ""
+  },
   "bottomMobileNavigation": true,
   "displayMobileMenuHam": true,
-  "displayMobileHeader": true,
   "menuButtonLabel": "Menu",
   "sideMenu": {
     "permanent": false,
@@ -41,7 +55,7 @@
   "theme": {
     "colors": {
       "primary": "#296c92",
-      "secondary": "#b2f5d9"
+      "secondary": "#8B0000"
     },
     "appBarElevation": 1
   }

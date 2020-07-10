@@ -8,6 +8,7 @@ extends:
 globals:
   Atomics: readonly
   SharedArrayBuffer: readonly
+parser: "babel-eslint"
 parserOptions:
   ecmaFeatures:
     jsx: true
@@ -23,9 +24,6 @@ rules:
   linebreak-style:
     - error
     - unix
-  quotes:
-    - error
-    - single
   semi:
     - error
     - always
