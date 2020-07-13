@@ -4,7 +4,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 // import EditIcon from '@material-ui/icons/Edit';
 import { HeaderElements } from 'components';
 import { LayoutContext } from 'contexts';
-import { API } from 'helpers/index';
+import { API, TextHelper } from 'helpers/index';
 // import { EnhancedDrawer } from 'components';
 
 const useStyles = makeStyles({
@@ -201,7 +201,11 @@ export const Home = () => {
                     </Typography>
 
                     {article.category.length > 0 && <Typography gutterBottom variant="body1">
-                      Categories : {article.category.map((cat, i) => i === article.category.length - 1 ? <span key={"cat" + i} >{cat}</span> : <span key={"cat" + i} >{cat},</span>)}
+                      Categories: {article.category.map((cat, i) => i === article.category.length - 1 ? <span key={"cat" + i} >{cat}</span> : <span key={"cat" + i} >{cat},</span>)}
+                    </Typography>}
+
+                    {article.region && <Typography gutterBottom variant="body1">
+                      Region: <strong>{TextHelper.titleCase(article.region)}</strong>
                     </Typography>}
 
                     <Typography gutterBottom variant="subtitle">
