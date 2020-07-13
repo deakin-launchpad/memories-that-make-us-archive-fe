@@ -1,6 +1,9 @@
 import { AccessToken, logout } from 'contexts/helpers';
 import { notify } from 'components';
 import { axiosInstance } from '../index';
+import * as http from "http";
+import * as https from "https";
+
 /**
  *  @errorHelper :  Function to return error StatusText.
  */
@@ -8,8 +11,10 @@ import { axiosInstance } from '../index';
 const logoutOnNetworkError = false;
 
 
+
 const errorHelper = (error, variant) => {
   console.log(error);
+  console.log(JSON.stringify(error));
   if (error.response === undefined) {
     notify("Network Error");
     if (logoutOnNetworkError)
@@ -56,6 +61,10 @@ const performCallback = (callback, data) => {
 };
 
 class API {
+
+  httpAlwaysAliveAgent = new http.Agent({ keepAlive: true });
+  httpsAlwaysAliveAgent = new https.Agent({ keepAlive: true });
+
   displayAccessToken = () => {
     console.log(AccessToken);
   }
@@ -114,6 +123,10 @@ class API {
   uploadImage = (data, callback, optional) => {
     const { onUploadProgress } = optional !== undefined ? optional : { onUploadProgress: () => { } };
     axiosInstance.post('/upload/uploadImage', data, {
+      'Content-Type': 'multipart/form-data',
+
+      httpAgent: this.httpAlwaysAliveAgent,
+      httpsAgent: this.httpsAlwaysAliveAgent,
       timeout: Number.POSITIVE_INFINITY,
       headers: {
         authorization: 'Bearer ' + AccessToken
@@ -130,6 +143,9 @@ class API {
   uploadVideo = (data, callback, optional) => {
     const { onUploadProgress } = optional !== undefined ? optional : { onUploadProgress: () => { } };
     axiosInstance.post('/upload/uploadVideo', data, {
+      'Content-Type': 'multipart/form-data',
+      httpAgent: this.httpAlwaysAliveAgent,
+      httpsAgent: this.httpsAlwaysAliveAgent,
       timeout: Number.POSITIVE_INFINITY,
       headers: {
         authorization: 'Bearer ' + AccessToken
@@ -149,6 +165,9 @@ class API {
   uploadAudio = (data, callback, optional) => {
     const { onUploadProgress } = optional !== undefined ? optional : { onUploadProgress: () => { } };
     axiosInstance.post('/upload/uploadAudio', data, {
+      'Content-Type': 'multipart/form-data',
+      httpAgent: this.httpAlwaysAliveAgent,
+      httpsAgent: this.httpsAlwaysAliveAgent,
       timeout: Number.POSITIVE_INFINITY,
       headers: {
         authorization: 'Bearer ' + AccessToken

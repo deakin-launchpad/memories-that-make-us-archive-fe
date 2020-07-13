@@ -184,71 +184,74 @@ export const Home = () => {
         </Grid>
       </Grid>
       <Grid container justify='flex-start' direction='row' spacing={2}>
-        {articles !== null && articles !== undefined && articles.map((article, i) => (
-          <Grid item xs={12} xl={3} lg={5} md={4} sm={5} key={i} >
-            <Card className={classes.card}>
-              <CardActionArea >
-                {article.media[0] !== undefined && article.media[0].thumbnail !== undefined && <CardMedia
-                  className={classes.media}
-                  image={article.media[0].thumbnail}
-                  title={article.title}
-                />}
-                <CardContent >
-                  <Typography gutterBottom variant="h6" component="h4">
-                    {article.title}
-                  </Typography>
+        {articles !== null && articles !== undefined && articles.map((article, i) => {
+          let cover = article.media.filter(m => m.isCover === true);
+          return (
+            <Grid item xs={12} xl={3} lg={5} md={4} sm={5} key={i} >
+              <Card className={classes.card}>
+                <CardActionArea >
+                  {cover[0] !== undefined && cover[0].thumbnail !== undefined && <CardMedia
+                    className={classes.media}
+                    image={cover[0].thumbnail}
+                    title={article.title}
+                  />}
+                  <CardContent >
+                    <Typography gutterBottom variant="h6" component="h4">
+                      {article.title}
+                    </Typography>
 
-                  {article.category.length > 0 && <Typography gutterBottom variant="body1">
-                    Categories : {article.category.map((cat, i) => i === article.category.length - 1 ? <span key={"cat" + i} >{cat}</span> : <span key={"cat" + i} >{cat},</span>)}
-                  </Typography>}
+                    {article.category.length > 0 && <Typography gutterBottom variant="body1">
+                      Categories : {article.category.map((cat, i) => i === article.category.length - 1 ? <span key={"cat" + i} >{cat}</span> : <span key={"cat" + i} >{cat},</span>)}
+                    </Typography>}
 
-                  <Typography gutterBottom variant="subtitle">
-                    Posted on {formatTime(article.date)}
-                  </Typography>
-                  <Typography variant="body2" color="textSecondary" component="p" dangerouslySetInnerHTML={{ __html: article.content }} >
-                  </Typography>
-                </CardContent>
-              </CardActionArea>
-              <CardActions className={classes.cardButton}>
-                {article.link === undefined || article.link === '' ? null :
-                  <a target="_blank" href={article.link.substring(0, 8) === 'https://' ? article.link : 'https://' + article.link} rel="noopener noreferrer">
-                    <Button size="small" color="primary"  >
-                      Learn More
-                    </Button>
-                  </a>
-                }
-                {/* <Fab color="primary" size="small" aria-label="add" className={classes.margin}>
+                    <Typography gutterBottom variant="subtitle">
+                      Posted on {formatTime(article.date)}
+                    </Typography>
+                    <Typography variant="body2" color="textSecondary" component="p" dangerouslySetInnerHTML={{ __html: article.content }} >
+                    </Typography>
+                  </CardContent>
+                </CardActionArea>
+                <CardActions className={classes.cardButton}>
+                  {article.link === undefined || article.link === '' ? null :
+                    <a target="_blank" href={article.link.substring(0, 8) === 'https://' ? article.link : 'https://' + article.link} rel="noopener noreferrer">
+                      <Button size="small" color="primary"  >
+                        Learn More
+                      </Button>
+                    </a>
+                  }
+                  {/* <Fab color="primary" size="small" aria-label="add" className={classes.margin}>
                   <EditIcon />
                 </Fab> */}
-                <IconButton aria-label="delete" color='primary' style={{ position: 'relative' }} onClick={() => handleClickOpen(article._id)}>
-                  <DeleteIcon />
-                </IconButton>
-                <Dialog
-                  open={open}
-                  onClose={handleClose}
-                  aria-labelledby="draggable-dialog-title"
-                >
-                  <DialogTitle style={{ cursor: 'move' }} id="draggable-dialog-title">
-                    Delete
-                  </DialogTitle>
-                  <DialogContent>
-                    <DialogContentText>
-                      Are you sure you want to delete this news
-                    </DialogContentText>
-                  </DialogContent>
-                  <DialogActions>
-                    <Button autoFocus onClick={handleClose} color="primary">
-                      Cancel
-                    </Button>
-                    <Button onClick={handleDelete} color="primary">
+                  <IconButton aria-label="delete" color='primary' style={{ position: 'relative' }} onClick={() => handleClickOpen(article._id)}>
+                    <DeleteIcon />
+                  </IconButton>
+                  <Dialog
+                    open={open}
+                    onClose={handleClose}
+                    aria-labelledby="draggable-dialog-title"
+                  >
+                    <DialogTitle style={{ cursor: 'move' }} id="draggable-dialog-title">
                       Delete
-                    </Button>
-                  </DialogActions>
-                </Dialog>
-              </CardActions>
-            </Card>
-          </Grid>
-        ))}
+                    </DialogTitle>
+                    <DialogContent>
+                      <DialogContentText>
+                        Are you sure you want to delete this news
+                      </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                      <Button autoFocus onClick={handleClose} color="primary">
+                        Cancel
+                      </Button>
+                      <Button onClick={handleDelete} color="primary">
+                        Delete
+                      </Button>
+                    </DialogActions>
+                  </Dialog>
+                </CardActions>
+              </Card>
+            </Grid>
+          );
+        })}
       </Grid>
     </Grid >
   );

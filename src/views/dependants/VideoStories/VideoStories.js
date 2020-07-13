@@ -61,17 +61,17 @@ const VideoStoryCard = ({ storyId, title, description, thumbnail, videos, reload
               <IconButton
                 onClick={() => {
                   setInternalVideos([]);
-                  // let data = {
-                  //   storyId,
-                  //   videoId: video._id
-                  // };
-                  // API.deleteVideoFromExistingVideoStory(data, (response) => {
-                  //   if (response) {
-                  //     notify("Deleted");
-                  //     let temp = internalVideos.filter(videoX => videoX._id !== video._id);
-                  //     setInternalVideos(temp);
-                  //   }
-                  // });
+                  let data = {
+                    storyId,
+                    videoId: video._id
+                  };
+                  API.deleteVideoFromExistingVideoStory(data, (response) => {
+                    if (response) {
+                      notify("Deleted");
+                      let temp = internalVideos.filter(videoX => videoX._id !== video._id);
+                      setInternalVideos(temp);
+                    }
+                  });
                 }}
               ><i className="material-icons" style={{ color: "red" }}>delete</i></IconButton>
             </ListItemSecondaryAction>
