@@ -14,6 +14,7 @@ import { EnhancedDrawer } from './common/EnhancedDrawer';
 import { LoginCheck } from './helpers/LoginCheck.js';
 import { VideoCall } from './common/VideoCall';
 import { ConfirmationDailog } from './dependants/ConfirmationDailog';
+import { VideoManager } from "./dependants/VideoManager";
 
 export {
   EnhancedNotification as Notification,
@@ -32,5 +33,6 @@ export {
   EnhancedDrawer,
   LoginCheck,
   VideoCall,
-  ConfirmationDailog
+  ConfirmationDailog,
+  VideoManager
 };

@@ -244,7 +244,7 @@ class API {
 
 
   getCategories = (callback) => {
-    axiosInstance.get('/memory/getRegions ', {
+    axiosInstance.get('/memory/getRegions', {
     }).then(response => {
       return callback(response.data.data.data);
     }).catch(error => {
@@ -258,8 +258,51 @@ class API {
         authorization: 'Bearer ' + AccessToken
       },
     }).then(() => {
+      notify("Archieve Deleted");
+    }).catch(error => {
+      errorHelper(error);
+    });
+  }
+
+  getMediaFiles = (callback) => {
+    axiosInstance.get('/admin/getMediaLibrary', {
+      headers: {
+        authorization: 'Bearer ' + AccessToken
+      },
+    }).then(response => {
+      return callback(response.data.data.mediaList);
+    }).catch(error => {
+      errorHelper(error);
+    });
+  }
+
+  uploadLargeVideo = (data, callback, optional) => {
+    const { onUploadProgress } = optional !== undefined ? optional : { onUploadProgress: () => { } };
+    axiosInstance.post('/upload/uploadLargeVideo', data, {
+      'Content-Type': 'multipart/form-data',
+      httpAgent: this.httpAlwaysAliveAgent,
+      httpsAgent: this.httpsAlwaysAliveAgent,
+      timeout: Number.POSITIVE_INFINITY,
+      headers: {
+        authorization: 'Bearer ' + AccessToken
+      },
+      onUploadProgress: onUploadProgress !== undefined && onUploadProgress instanceof Function ? (progressEvent) => onUploadProgress(Math.round((progressEvent.loaded * 100) / progressEvent.total)) : () => { }
+
+    }).then(() => {
+      return callback(true);
+    }).catch(error => {
+      errorHelper(error);
+    });
+  }
+
+  deleteVideo = (id, callback) => {
+    axiosInstance.delete('/upload/deleteVideo/' + id, {
+      headers: {
+        authorization: 'Bearer ' + AccessToken
+      },
+    }).then(() => {
       notify("News Deleted");
-      window.location.reload();
+      callback(true);
     }).catch(error => {
       errorHelper(error);
     });

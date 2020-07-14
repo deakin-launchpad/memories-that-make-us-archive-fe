@@ -2,7 +2,7 @@ import React, { useEffect, useContext, useState } from 'react';
 import { Grid, Typography, makeStyles, Card, CardActionArea, CardMedia, CardActions, CardContent, Button, TextField, MenuItem, Slider, IconButton, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 // import EditIcon from '@material-ui/icons/Edit';
-import { HeaderElements } from 'components';
+import { HeaderElements, VideoManager } from 'components';
 import { LayoutContext } from 'contexts';
 import { API, TextHelper } from 'helpers/index';
 // import { EnhancedDrawer } from 'components';
@@ -109,11 +109,6 @@ export const Home = () => {
     return `${value}`;
   }
 
-  // function handleContent(data) {
-  //   setDrawerContent(<Typography variant="body2" color="textSecondary" component="p" dangerouslySetInnerHTML={{ __html: data }}>
-  //   </Typography>);
-  //   setBottomDrawerStatus(true);
-  // }
   const handleChange = event => {
     setCategory(event.target.value);
   };
@@ -125,19 +120,20 @@ export const Home = () => {
     </HeaderElements>);
   }, [pageTitle, setHeaderElements]);
   return (
-    <Grid container justify='flex-start' direction='row' alignItems="stretch" style={{ marginTop: 20, marginRight: 20 }}>
+    <Grid container justify='flex-start' direction='row' alignItems="stretch" style={{ margin: "10px" }}>
       <Grid item xs={12} xl={12} lg={12} md={12} sm={12} style={{ marginLeft: 10 }} >
-        <Typography variant="h4">News Feed</Typography>
+        <Typography variant="h4">Archieves</Typography>
       </Grid>
-      <Grid container spacing={5}>
-        <Grid item xs={'auto'} xl={'auto'} lg={'auto'} md={'auto'} sm={'auto'} style={{ marginLeft: 10 }} >
+      <Grid container spacing={2}>
+        <Grid item xs={3}>
           <TextField
             id="standard-select-category"
             select
             label="Select"
             value={category}
             onChange={handleChange}
-            helperText="Select a category"
+            helperText="Select a region"
+            fullWidth
           >
             {categories.map(option => (
               <MenuItem key={option} value={option}>
@@ -146,7 +142,7 @@ export const Home = () => {
             ))}
           </TextField>
         </Grid>
-        <Grid item xs={'auto'} xl={'auto'} lg={'auto'} md={'auto'} sm={'auto'}>
+        <Grid item xs={3}>
           <Typography id="discrete-slider" gutterBottom>
             Select Top results
           </Typography>
@@ -161,23 +157,25 @@ export const Home = () => {
             max={100}
           />
         </Grid>
-        <Grid item xs={'auto'} xl={'auto'} lg={'auto'} md={'auto'} sm={'auto'}>
+        <Grid item xs={3}>
           <TextField
             id='search'
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder='Search...'
             variant='outlined'
+            fullWidth
           >
           </TextField>
         </Grid>
-        <Grid item xs={'auto'} xl={'auto'} lg={'auto'} md={'auto'} sm={'auto'}>
+        <Grid item xs={3}>
           <TextField
             id='page'
             value={currentPageNumber}
             onChange={(e) => setCurrentPageNumber(e.target.value)}
             placeholder='Pagenumber'
             variant='outlined'
+            fullWidth
             helperText="Page Number"
           >
           </TextField>
@@ -211,7 +209,9 @@ export const Home = () => {
                     <Typography gutterBottom variant="subtitle">
                       Posted on {formatTime(article.date)}
                     </Typography>
+
                     <Typography variant="body2" color="textSecondary" component="p" dangerouslySetInnerHTML={{ __html: article.content }} >
+
                     </Typography>
                   </CardContent>
                 </CardActionArea>
