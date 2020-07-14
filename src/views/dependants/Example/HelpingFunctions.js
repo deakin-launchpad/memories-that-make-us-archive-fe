@@ -318,37 +318,40 @@ export const CreatePost = (props) => {
               Media
             </InputLabel>
             <List dense={true} >
-              <Button onClick={() => {
-                var input = document.createElement('input');
-                input.setAttribute('type', 'file');
-                input.setAttribute('accept', "video/*,audio/*, image/*");
-                input.onchange = function (e) {
-                  uploadMedia(e.target.files, (link, extras) => {
-                    switch (extras.type) {
-                    case "audio": setUploadedMedia([...uploadedMedia, {
-                      link: link,
-                      type: "audio"
-                    }]);
-                      break;
-                    case "video": setUploadedMedia([...uploadedMedia, {
-                      link: link,
-                      type: "video",
-                      thumbnail: extras.poster
-                    }]);
-                      break;
-                    case "image": setUploadedMedia([...uploadedMedia, {
-                      link: link,
-                      type: "image",
-                      thumbnail: link,
-                      isCover: false
-                    }]);
-                      break;
-                    default: return;
-                    }
-                  });
-                };
-                input.click();
-              }}>
+              <Button 
+                variant="outlined"
+                fullWidth
+                onClick={() => {
+                  var input = document.createElement('input');
+                  input.setAttribute('type', 'file');
+                  input.setAttribute('accept', "video/*,audio/*, image/*");
+                  input.onchange = function (e) {
+                    uploadMedia(e.target.files, (link, extras) => {
+                      switch (extras.type) {
+                      case "audio": setUploadedMedia([...uploadedMedia, {
+                        link: link,
+                        type: "audio"
+                      }]);
+                        break;
+                      case "video": setUploadedMedia([...uploadedMedia, {
+                        link: link,
+                        type: "video",
+                        thumbnail: extras.poster
+                      }]);
+                        break;
+                      case "image": setUploadedMedia([...uploadedMedia, {
+                        link: link,
+                        type: "image",
+                        thumbnail: link,
+                        isCover: false
+                      }]);
+                        break;
+                      default: return;
+                      }
+                    });
+                  };
+                  input.click();
+                }}>
                 Upload Media
               </Button>
               {
