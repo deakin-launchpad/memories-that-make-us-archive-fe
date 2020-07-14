@@ -2,7 +2,7 @@ import React, { useEffect, useContext, useState } from 'react';
 import { Grid, Typography, makeStyles, Card, CardActionArea, CardMedia, CardActions, CardContent, Button, TextField, MenuItem, Slider, IconButton, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 // import EditIcon from '@material-ui/icons/Edit';
-import { HeaderElements, VideoManager } from 'components';
+import { HeaderElements } from 'components';
 import { LayoutContext } from 'contexts';
 import { API, TextHelper } from 'helpers/index';
 // import { EnhancedDrawer } from 'components';
