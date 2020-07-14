@@ -111,10 +111,7 @@ export const CreatePost = (props) => {
   const [imageLocalLink, setLocalLink] = useState('');
   const [uname, setUname] = useState();
   const [content, setContent] = useState("");
-  const [uploadedMedia, setUploadedMedia] = useState([{
-    link: "test",
-    type: "audio"
-  }]);
+  const [uploadedMedia, setUploadedMedia] = useState([]);
 
   useEffect(() => {
     let arr = String(props.userName).split(' ');
