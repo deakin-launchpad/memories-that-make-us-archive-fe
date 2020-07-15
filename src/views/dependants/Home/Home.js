@@ -1,11 +1,9 @@
 import React, { useEffect, useContext, useState } from 'react';
-import { Grid, Typography, makeStyles, Card, CardActionArea, CardMedia, CardActions, CardContent, Button, TextField, MenuItem, Slider, IconButton, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@material-ui/core';
-import DeleteIcon from '@material-ui/icons/Delete';
-// import EditIcon from '@material-ui/icons/Edit';
+import { Grid, Typography, makeStyles, Card, CardActionArea, CardMedia, CardActions, CardContent, Button, TextField, MenuItem, Slider, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@material-ui/core';
+
 import { HeaderElements } from 'components';
 import { LayoutContext } from 'contexts';
 import { API, TextHelper } from 'helpers/index';
-// import { EnhancedDrawer } from 'components';
 
 const useStyles = makeStyles({
   card: {
@@ -120,9 +118,9 @@ export const Home = () => {
     </HeaderElements>);
   }, [pageTitle, setHeaderElements]);
   return (
-    <Grid container justify='flex-start' direction='row' alignItems="stretch" style={{ margin: "10px" }}>
+    <Grid container justify='flex-start' direction='row' alignItems="space-between" style={{ margin: "10px" }}>
       <Grid item xs={12} xl={12} lg={12} md={12} sm={12} style={{ marginLeft: 10 }} >
-        <Typography variant="h4">Archieves</Typography>
+        <Typography variant="h4">Archieve</Typography>
       </Grid>
       <Grid container spacing={2}>
         <Grid item xs={3}>
@@ -144,7 +142,7 @@ export const Home = () => {
         </Grid>
         <Grid item xs={3}>
           <Typography id="discrete-slider" gutterBottom>
-            Select Top results
+            No of results
           </Typography>
           <Slider
             defaultValue={10}
@@ -210,9 +208,7 @@ export const Home = () => {
                       Posted on {formatTime(article.date)}
                     </Typography>
 
-                    <Typography variant="body2" color="textSecondary" component="p" dangerouslySetInnerHTML={{ __html: article.content }} >
-
-                    </Typography>
+                    <Typography variant="body2" color="textSecondary" component="p" dangerouslySetInnerHTML={{ __html: article.content }} />
                   </CardContent>
                 </CardActionArea>
                 <CardActions className={classes.cardButton}>
@@ -223,12 +219,9 @@ export const Home = () => {
                       </Button>
                     </a>
                   }
-                  {/* <Fab color="primary" size="small" aria-label="add" className={classes.margin}>
-                  <EditIcon />
-                </Fab> */}
-                  <IconButton aria-label="delete" color='primary' style={{ position: 'relative' }} onClick={() => handleClickOpen(article._id)}>
-                    <DeleteIcon />
-                  </IconButton>
+                  <Button variant="outlined" aria-label="delete" color='secondary' style={{ position: 'relative' }} onClick={() => handleClickOpen(article._id)}>
+                    Delete
+                  </Button>
                   <Dialog
                     open={open}
                     onClose={handleClose}

@@ -4,7 +4,7 @@ import { VideoManager } from "components";
 export const VideoManagerScreen = () => {
 
   let manager = (
-    <VideoManager />
+    <VideoManager style={{ margin: "10px" }} />
   );
   return manager;
 };

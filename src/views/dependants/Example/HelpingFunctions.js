@@ -6,7 +6,7 @@ import {
   Card, CardHeader, Avatar, CardActions, CardContent, Typography, Grid, Button, Divider, TextField, InputAdornment, IconButton, Box, InputLabel,
   List, ListItem, ListItemText, ListItemSecondaryAction
 } from '@material-ui/core';
-import { Image, notify, ConfirmationDailog, EnhancedEditor } from 'components';
+import { Image, notify, ConfirmationDailog, EnhancedEditor, VideoManager, EnhancedModal } from 'components';
 import { TextHelper, API } from 'helpers';
 import ThumbUpAlt from '@material-ui/icons/ThumbUpAlt';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -112,6 +112,7 @@ export const CreatePost = (props) => {
   const [uname, setUname] = useState();
   const [content, setContent] = useState("");
   const [uploadedMedia, setUploadedMedia] = useState([]);
+  const [videoManagerIsOpen, setVideoManagerIsOpen] = useState(false);
 
   useEffect(() => {
     let arr = String(props.userName).split(' ');
@@ -213,6 +214,25 @@ export const CreatePost = (props) => {
     } else notify('Title and Content required');
   };
   return (<Card style={{ width: '100%' }}>
+    <EnhancedModal isOpen={videoManagerIsOpen}
+      dialogTitle="Video Manager"
+      dialogContent={<VideoManager top={0} onSelect={(videoData) => {
+        if (!videoData.isUploaded) return notify("Video is still being uploaded");
+        setUploadedMedia([...uploadedMedia, {
+          link: videoData.link,
+          type: "video",
+          thumbnail: videoData.thumb,
+          isCover: false
+        }]);
+        setVideoManagerIsOpen(false);
+      }} />}
+      options={{
+        disableSubmit: true,
+        onClose: () => {
+          setVideoManagerIsOpen(false);
+        },
+        closeButtonName: "Close"
+      }} />
     <CardContent>
       <input type="file" id="fileupload" multiple accept="image/*" style={{ display: 'none' }} onChange={(e) => {
         if (e.target.files[0] !== undefined) if (e.target.files[0] !== null) {
@@ -318,42 +338,51 @@ export const CreatePost = (props) => {
               Media
             </InputLabel>
             <List dense={true} >
-              <Button 
-                variant="outlined"
-                fullWidth
-                onClick={() => {
-                  var input = document.createElement('input');
-                  input.setAttribute('type', 'file');
-                  input.setAttribute('accept', "video/*,audio/*, image/*");
-                  input.onchange = function (e) {
-                    uploadMedia(e.target.files, (link, extras) => {
-                      switch (extras.type) {
-                      case "audio": setUploadedMedia([...uploadedMedia, {
-                        link: link,
-                        type: "audio"
-                      }]);
-                        break;
-                      case "video": setUploadedMedia([...uploadedMedia, {
-                        link: link,
-                        type: "video",
-                        thumbnail: extras.poster
-                      }]);
-                        break;
-                      case "image": setUploadedMedia([...uploadedMedia, {
-                        link: link,
-                        type: "image",
-                        thumbnail: link,
-                        isCover: false
-                      }]);
-                        break;
-                      default: return;
-                      }
-                    });
-                  };
-                  input.click();
-                }}>
-                Upload Media
-              </Button>
+              <Grid container spacing={1}>
+                <Grid item xs={6}>
+                  <Button
+                    variant="outlined"
+                    fullWidth
+                    onClick={() => {
+                      var input = document.createElement('input');
+                      input.setAttribute('type', 'file');
+                      input.setAttribute('accept', "audio/*, image/*");
+                      input.onchange = function (e) {
+                        uploadMedia(e.target.files, (link, extras) => {
+                          switch (extras.type) {
+                          case "audio": setUploadedMedia([...uploadedMedia, {
+                            link: link,
+                            type: "audio"
+                          }]);
+                            break;
+                          case "image": setUploadedMedia([...uploadedMedia, {
+                            link: link,
+                            type: "image",
+                            thumbnail: link,
+                            isCover: false
+                          }]);
+                            break;
+                          default: return;
+                          }
+                        });
+                      };
+                      input.click();
+                    }}>
+                    Upload Audio and Images
+                  </Button>
+                </Grid>
+                <Grid item xs={6}>
+                  <Button
+                    variant="outlined"
+                    fullWidth
+                    onClick={() => {
+                      setVideoManagerIsOpen(true);
+
+                    }}>
+                    Upload Video
+                  </Button>
+                </Grid>
+              </Grid>
               {
                 uploadedMedia.map((media, i) => <div key={i + "_media"}>
                   <ListItem>
