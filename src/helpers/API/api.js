@@ -252,13 +252,14 @@ class API {
     });
   }
 
-  deleteNews = (data) => {
+  deleteNews = (data, callback) => {
     axiosInstance.delete('/memory/deleteMemory/' + data, {
       headers: {
         authorization: 'Bearer ' + AccessToken
       },
     }).then(() => {
       notify("Archieve Deleted");
+      callback();
     }).catch(error => {
       errorHelper(error);
     });

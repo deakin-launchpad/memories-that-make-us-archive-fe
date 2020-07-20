@@ -87,7 +87,9 @@ export const Home = () => {
   };
 
   const handleDelete = () => {
-    API.deleteNews(selectedNewsId);
+    API.deleteNews(selectedNewsId, () => {
+      API.getNews({ numberOfRecords: numberOfRecords, currentPageNumber: currentPageNumber }, setArticles);
+    });
     setOpen(false);
   };
 
