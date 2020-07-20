@@ -253,7 +253,7 @@ class API {
   }
 
   deleteNews = (data) => {
-    axiosInstance.delete('/news/deleteNews/' + data, {
+    axiosInstance.delete('/memory/deleteMemory/' + data, {
       headers: {
         authorization: 'Bearer ' + AccessToken
       },
