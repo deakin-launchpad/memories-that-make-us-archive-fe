@@ -123,7 +123,7 @@ export const Home = () => {
           <Grid item xs={3}>
             <Typography id="discrete-slider" gutterBottom>
               No of results
-          </Typography>
+            </Typography>
             <Slider
               defaultValue={10}
               getAriaValueText={valuetext}
@@ -188,12 +188,12 @@ export const Home = () => {
                       <a target="_blank" href={article.link.substring(0, 8) === 'https://' ? article.link : 'https://' + article.link} rel="noopener noreferrer">
                         <Button size="small" color="primary"  >
                           Learn More
-                      </Button>
+                        </Button>
                       </a>
                     }
                     <Button variant="outlined" aria-label="delete" color='secondary' style={{ position: 'relative' }} onClick={() => handleClickOpen(article._id)}>
                       Delete
-                  </Button>
+                    </Button>
                     <Dialog
                       open={open}
                       onClose={handleClose}
@@ -201,19 +201,19 @@ export const Home = () => {
                     >
                       <DialogTitle style={{ cursor: 'move' }} id="draggable-dialog-title">
                         Delete
-                    </DialogTitle>
+                      </DialogTitle>
                       <DialogContent>
                         <DialogContentText>
                           Are you sure you want to delete this memory
-                      </DialogContentText>
+                        </DialogContentText>
                       </DialogContent>
                       <DialogActions>
                         <Button autoFocus onClick={handleClose} color="primary">
                           Cancel
-                      </Button>
+                        </Button>
                         <Button onClick={handleDelete} color="primary">
                           Delete
-                      </Button>
+                        </Button>
                       </DialogActions>
                     </Dialog>
                   </CardActions>
