@@ -2,30 +2,48 @@
   "landingPage": "/home",
   "menuItems": [
     {
-      "name": "HOME",
+      "name": "Archive",
       "type": "button",
-      "icon": "home",
+      "icon": "archive",
       "controller": "/home",
-      "customTitle": "Memorie",
+      "customTitle": "Archieve",
       "isFavourite": true,
       "subMenuItems": []
     },
     {
-      "name": "Memories",
+      "name": "Create Memory",
       "type": "button",
-      "icon": "code",
+      "icon": "cake",
       "controller": "/examples",
-      "customTitle": "Publish",
+      "customTitle": "Create Memory for archieve",
       "isFavourite": true,
       "subMenuItems": []
     },
     {
       "name": "Video Stories",
       "type": "button",
-      "icon": "code",
+      "icon": "tv",
       "controller": "/videoStories",
-      "customTitle": "Publish",
+      "customTitle": "Video Stories",
       "isFavourite": true,
+      "subMenuItems": []
+    },
+    {
+      "name": "Memory Walk",
+      "type": "button",
+      "icon": "directions_walk",
+      "controller": "/memoryWalk",
+      "customTitle": "Memory Walk",
+      "isFavourite": true,
+      "subMenuItems": []
+    },
+    {
+      "name": "Video Manager",
+      "type": "button",
+      "icon": "movie",
+      "controller": "/videoManager",
+      "customTitle": "Video Manager",
+      "isFavourite": false,
       "subMenuItems": []
     },
     {
@@ -33,7 +51,7 @@
       "type": "logout",
       "icon": "logout",
       "controller": "",
-      "customTitle": "LPAD News",
+      "customTitle": "memories",
       "isFavourite": false,
       "subMenuItems": []
     }
@@ -47,9 +65,9 @@
   },
   "bottomMobileNavigation": true,
   "displayMobileMenuHam": true,
-  "menuButtonLabel": "Menu",
+  "menuButtonLabel": "Extras",
   "sideMenu": {
-    "permanent": false,
+    "permanent": true,
     "default": "open"
   },
   "theme": {

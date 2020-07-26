@@ -1,6 +1,9 @@
 import { AccessToken, logout } from 'contexts/helpers';
 import { notify } from 'components';
 import { axiosInstance } from '../index';
+import * as http from "http";
+import * as https from "https";
+
 /**
  *  @errorHelper :  Function to return error StatusText.
  */
@@ -8,8 +11,10 @@ import { axiosInstance } from '../index';
 const logoutOnNetworkError = false;
 
 
+
 const errorHelper = (error, variant) => {
   console.log(error);
+  console.log(JSON.stringify(error));
   if (error.response === undefined) {
     notify("Network Error");
     if (logoutOnNetworkError)
@@ -56,6 +61,10 @@ const performCallback = (callback, data) => {
 };
 
 class API {
+
+  httpAlwaysAliveAgent = new http.Agent({ keepAlive: true });
+  httpsAlwaysAliveAgent = new https.Agent({ keepAlive: true });
+
   displayAccessToken = () => {
     console.log(AccessToken);
   }
@@ -81,12 +90,13 @@ class API {
     performCallback(callback);
   }
 
-  createNews = (data) => {
+  createNews = (data, callback) => {
     axiosInstance.post('/memory/createMemory', data, {
       headers: {
         authorization: 'Bearer ' + AccessToken
       }
     }).then(() => {
+      performCallback(callback);
       notify("Memory Created");
     }).catch(error => {
       errorHelper(error);
@@ -114,6 +124,10 @@ class API {
   uploadImage = (data, callback, optional) => {
     const { onUploadProgress } = optional !== undefined ? optional : { onUploadProgress: () => { } };
     axiosInstance.post('/upload/uploadImage', data, {
+      'Content-Type': 'multipart/form-data',
+
+      httpAgent: this.httpAlwaysAliveAgent,
+      httpsAgent: this.httpsAlwaysAliveAgent,
       timeout: Number.POSITIVE_INFINITY,
       headers: {
         authorization: 'Bearer ' + AccessToken
@@ -130,6 +144,9 @@ class API {
   uploadVideo = (data, callback, optional) => {
     const { onUploadProgress } = optional !== undefined ? optional : { onUploadProgress: () => { } };
     axiosInstance.post('/upload/uploadVideo', data, {
+      'Content-Type': 'multipart/form-data',
+      httpAgent: this.httpAlwaysAliveAgent,
+      httpsAgent: this.httpsAlwaysAliveAgent,
       timeout: Number.POSITIVE_INFINITY,
       headers: {
         authorization: 'Bearer ' + AccessToken
@@ -149,6 +166,9 @@ class API {
   uploadAudio = (data, callback, optional) => {
     const { onUploadProgress } = optional !== undefined ? optional : { onUploadProgress: () => { } };
     axiosInstance.post('/upload/uploadAudio', data, {
+      'Content-Type': 'multipart/form-data',
+      httpAgent: this.httpAlwaysAliveAgent,
+      httpsAgent: this.httpsAlwaysAliveAgent,
       timeout: Number.POSITIVE_INFINITY,
       headers: {
         authorization: 'Bearer ' + AccessToken
@@ -225,7 +245,7 @@ class API {
 
 
   getCategories = (callback) => {
-    axiosInstance.get('/memory/getRegions ', {
+    axiosInstance.get('/memory/getRegions', {
     }).then(response => {
       return callback(response.data.data.data);
     }).catch(error => {
@@ -233,15 +253,106 @@ class API {
     });
   }
 
-  deleteNews = (data) => {
-    axiosInstance.delete('/news/deleteNews/' + data, {
+  deleteNews = (data, callback) => {
+    axiosInstance.delete('/memory/deleteMemory/' + data, {
       headers: {
         authorization: 'Bearer ' + AccessToken
       },
     }).then(() => {
-      notify("News Deleted");
-      window.location.reload();
+      notify("Archieve Deleted");
+      callback();
     }).catch(error => {
+      errorHelper(error);
+    });
+  }
+
+  getMediaFiles = (callback) => {
+    axiosInstance.get('/admin/getMediaLibrary', {
+      headers: {
+        authorization: 'Bearer ' + AccessToken
+      },
+    }).then(response => {
+      return callback(response.data.data.mediaList);
+    }).catch(error => {
+      errorHelper(error);
+    });
+  }
+
+  uploadLargeVideo = (data, callback, optional) => {
+    const { onUploadProgress } = optional !== undefined ? optional : { onUploadProgress: () => { } };
+    axiosInstance.post('/upload/uploadLargeVideo', data, {
+      'Content-Type': 'multipart/form-data',
+      httpAgent: this.httpAlwaysAliveAgent,
+      httpsAgent: this.httpsAlwaysAliveAgent,
+      timeout: Number.POSITIVE_INFINITY,
+      headers: {
+        authorization: 'Bearer ' + AccessToken
+      },
+      onUploadProgress: onUploadProgress !== undefined && onUploadProgress instanceof Function ? (progressEvent) => onUploadProgress(Math.round((progressEvent.loaded * 100) / progressEvent.total)) : () => { }
+
+    }).then(() => {
+      return callback(true);
+    }).catch(error => {
+      errorHelper(error);
+    });
+  }
+
+  deleteVideo = (id, callback) => {
+    axiosInstance.delete('/upload/deleteVideo/' + id, {
+      headers: {
+        authorization: 'Bearer ' + AccessToken
+      },
+    }).then(() => {
+      notify("Video Deleted");
+      callback(true);
+    }).catch(error => {
+      errorHelper(error);
+    });
+  }
+
+  getMemoryWalks = (callback) => {
+    return axiosInstance.get('memoryWalk/getAllMemoryWalks').then((response) => {
+      performCallback(callback, response.data.data);
+    }).catch(error => {
+      errorHelper(error);
+    });
+  }
+
+
+  deleteMemoryWalk = (id, callback) => {
+    return axiosInstance.delete(`memoryWalk/deleteMemoryWalk/${id}`, {
+      headers: {
+        authorization: 'Bearer ' + AccessToken
+      },
+    }).then((response) => {
+      performCallback(callback, response.data.data);
+    }).catch(error => {
+      errorHelper(error);
+    });
+  }
+
+  createMemoryWalk = (data, callback) => {
+    return axiosInstance.post(`memoryWalk/createMemoryWalk`, data, {
+      headers: {
+        authorization: 'Bearer ' + AccessToken
+      },
+    }).then((response) => {
+      performCallback(callback, response.data.data);
+    }).catch(error => {
+      performCallback(callback, { error: true });
+      errorHelper(error);
+    });
+  }
+
+  updateMemoryWalk = (data, callback) => {
+    return axiosInstance.put(`memoryWalk/updateMemoryWalk/${data.id}`, data.data, {
+      headers: {
+        authorization: 'Bearer ' + AccessToken
+      },
+    }).then((response) => {
+      performCallback(callback, response.data.data);
+    }).catch(error => {
+      performCallback(callback, { error: true });
       errorHelper(error);
     });
   }
