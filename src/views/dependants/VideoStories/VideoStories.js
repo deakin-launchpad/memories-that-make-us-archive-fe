@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { API } from "helpers";
-import { Container, Card, CardHeader, CardContent, IconButton, Grid, Menu, MenuItem, TextField, List, ListItem, ListItemText, ListItemSecondaryAction, ListSubheader, Typography, Button } from "@material-ui/core";
+import { Container, Card, CardHeader, CardContent, IconButton, Grid, Menu, MenuItem, TextField, List, ListItem, ListItemText, ListItemSecondaryAction, ListSubheader, Typography, Button, CardMedia } from "@material-ui/core";
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 
 import { LoadingScreen, EnhancedModal, notify } from 'components';
+import { VideoManager } from 'components/index';
 
 const VideoStoryCard = ({ storyId, title, description, thumbnail, videos, reloadData }) => {
 
@@ -14,6 +15,7 @@ const VideoStoryCard = ({ storyId, title, description, thumbnail, videos, reload
   const [menuAnchor, setMenuAnchor] = useState(null);
   const [editModalIsOpen, setEditModalIsOpen] = useState(false);
   const [editVideosIsOpen, setEditVideosIsOpen] = useState(false);
+  const [videoManagerIsOpen, setVideoManagerIsOpen] = useState(false);
 
 
   useEffect(() => {
@@ -61,17 +63,17 @@ const VideoStoryCard = ({ storyId, title, description, thumbnail, videos, reload
               <IconButton
                 onClick={() => {
                   setInternalVideos([]);
-                  // let data = {
-                  //   storyId,
-                  //   videoId: video._id
-                  // };
-                  // API.deleteVideoFromExistingVideoStory(data, (response) => {
-                  //   if (response) {
-                  //     notify("Deleted");
-                  //     let temp = internalVideos.filter(videoX => videoX._id !== video._id);
-                  //     setInternalVideos(temp);
-                  //   }
-                  // });
+                  let data = {
+                    storyId,
+                    videoId: video._id
+                  };
+                  API.deleteVideoFromExistingVideoStory(data, (response) => {
+                    if (response) {
+                      notify("Deleted");
+                      let temp = internalVideos.filter(videoX => videoX._id !== video._id);
+                      setInternalVideos(temp);
+                    }
+                  });
                 }}
               ><i className="material-icons" style={{ color: "red" }}>delete</i></IconButton>
             </ListItemSecondaryAction>
@@ -99,6 +101,34 @@ const VideoStoryCard = ({ storyId, title, description, thumbnail, videos, reload
 
   if (videos === undefined) return <LoadingScreen />;
   let content = (<div>
+    <EnhancedModal isOpen={videoManagerIsOpen}
+      dialogTitle="Video Manager"
+      dialogContent={<VideoManager top={0} onSelect={(videoData) => {
+        if (!videoData.isUploaded) return notify("Video is still being uploaded");
+        setVideoManagerIsOpen(false);
+        let dataToSend = {
+          storyId, data: {
+            link: videoData.link,
+            thumb: videoData.thumb,
+            width: videoData.resolution.toString()
+          }
+        };
+        API.addVideoToExistingVideoStory(dataToSend, (response) => {
+          if (response) {
+            let textToNotify = "File Linked Successfuly";
+            notify(textToNotify, { timeout: 3000 });
+            if (response.videos !== undefined)
+              setInternalVideos(response.videos);
+          }
+        });
+      }} />}
+      options={{
+        disableSubmit: true,
+        onClose: () => {
+          setVideoManagerIsOpen(false);
+        },
+        closeButtonName: "Close"
+      }} />
     <EnhancedModal isOpen={editModalIsOpen}
       dialogTitle="Edit Video Story"
       dialogContent={editVideoContent}
@@ -120,43 +150,7 @@ const VideoStoryCard = ({ storyId, title, description, thumbnail, videos, reload
         </Grid>
         <Grid item xs={2}>
           <Button onClick={() => {
-            var input = document.createElement('input');
-            input.setAttribute('type', 'file');
-            input.setAttribute('accept', "video/*");
-            input.onchange = (e) => {
-              if (e.target.files[0] !== undefined) if (e.target.files[0] !== null) {
-                let formData = new FormData();
-                formData.append('videoFile', e.target.files[0]);
-                API.uploadVideo(formData, (videoLink, thumbnail, size) => {
-                  let dataToSend = {
-                    storyId, data: {
-                      link: videoLink,
-                      thumb: thumbnail,
-                      width: size.toString()
-                    }
-                  };
-                  API.addVideoToExistingVideoStory(dataToSend, (response) => {
-                    if (response) {
-                      let textToNotify = "File Uploaded Successfuly";
-                      notify(textToNotify, { timeout: 3000 });
-                      if (response.videos !== undefined)
-                        setInternalVideos(response.videos);
-                    }
-                  });
-                }, {
-                  onUploadProgress: (progressPercent) => {
-                    if (progressPercent === 100) {
-                      let textToNotify = "Video is being processed at the server";
-                      notify(textToNotify, { timeout: null });
-                    } else {
-                      let textToNotify = "Uploading video to server: " + progressPercent;
-                      notify(textToNotify, { timeout: null });
-                    }
-                  },
-                });
-              }
-            };
-            input.click();
+            setVideoManagerIsOpen(true);
           }}>
             {"Add Video"}
           </Button>
@@ -194,7 +188,7 @@ const VideoStoryCard = ({ storyId, title, description, thumbnail, videos, reload
       }}>Delete</MenuItem>
 
     </Menu>
-    <Card>
+    <Card style={{ width: "100%" }}>
       <CardHeader title={title} action={
         <IconButton onClick={(e) => {
           handleClick(e);
@@ -206,14 +200,14 @@ const VideoStoryCard = ({ storyId, title, description, thumbnail, videos, reload
         {description}
         {
           //TODO: Replace with a proper player or add resolution switcher with a select tag for resolution
-          internalVideos !== undefined && internalVideos.length > 0 ? <><br /><video controls >
+          internalVideos !== undefined && internalVideos.length > 0 ? <><br /><CardMedia component="video" controls >
             {
               internalVideos.map((source, i) =>
                 <source src={source.link} type="video/mp4" key={storyId + "_source_" + i} />
               )
             }
           Your browser does not support the video tag.
-          </video></>
+          </CardMedia></>
             : <center> <br /><Button onClick={() => {
               setEditVideosIsOpen(true);
             }}>Add Videos</Button></center>}

@@ -1,11 +1,9 @@
 import React, { useEffect, useContext, useState } from 'react';
-import { Grid, Typography, makeStyles, Card, CardActionArea, CardMedia, CardActions, CardContent, Button, TextField, MenuItem, Slider, IconButton, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@material-ui/core';
-import DeleteIcon from '@material-ui/icons/Delete';
-// import EditIcon from '@material-ui/icons/Edit';
+import { Grid, Typography, makeStyles, Card, CardActionArea, CardMedia, CardActions, CardContent, Button, TextField, MenuItem, Slider, Dialog, DialogTitle, Container, DialogContent, DialogContentText, DialogActions } from '@material-ui/core';
+
 import { HeaderElements } from 'components';
 import { LayoutContext } from 'contexts';
-import { API } from 'helpers/index';
-// import { EnhancedDrawer } from 'components';
+import { API, TextHelper } from 'helpers/index';
 
 const useStyles = makeStyles({
   card: {
@@ -89,7 +87,9 @@ export const Home = () => {
   };
 
   const handleDelete = () => {
-    API.deleteNews(selectedNewsId);
+    API.deleteNews(selectedNewsId, () => {
+      API.getNews({ numberOfRecords: numberOfRecords, currentPageNumber: currentPageNumber }, setArticles);
+    });
     setOpen(false);
   };
 
@@ -109,11 +109,6 @@ export const Home = () => {
     return `${value}`;
   }
 
-  // function handleContent(data) {
-  //   setDrawerContent(<Typography variant="body2" color="textSecondary" component="p" dangerouslySetInnerHTML={{ __html: data }}>
-  //   </Typography>);
-  //   setBottomDrawerStatus(true);
-  // }
   const handleChange = event => {
     setCategory(event.target.value);
   };
@@ -125,131 +120,139 @@ export const Home = () => {
     </HeaderElements>);
   }, [pageTitle, setHeaderElements]);
   return (
-    <Grid container justify='flex-start' direction='row' alignItems="stretch" style={{ marginTop: 20, marginRight: 20 }}>
-      <Grid item xs={12} xl={12} lg={12} md={12} sm={12} style={{ marginLeft: 10 }} >
-        <Typography variant="h4">News Feed</Typography>
-      </Grid>
-      <Grid container spacing={5}>
-        <Grid item xs={'auto'} xl={'auto'} lg={'auto'} md={'auto'} sm={'auto'} style={{ marginLeft: 10 }} >
-          <TextField
-            id="standard-select-category"
-            select
-            label="Select"
-            value={category}
-            onChange={handleChange}
-            helperText="Select a category"
-          >
-            {categories.map(option => (
-              <MenuItem key={option} value={option}>
-                {option}
-              </MenuItem>
-            ))}
-          </TextField>
+    <Container >
+      <Grid container justify='flex-start' direction='row' alignItems="space-between" style={{ padding: "10px" }}>
+        <Grid item xs={12} xl={12} lg={12} md={12} sm={12}  >
+          <Typography variant="h4">Archieve</Typography>
         </Grid>
-        <Grid item xs={'auto'} xl={'auto'} lg={'auto'} md={'auto'} sm={'auto'}>
-          <Typography id="discrete-slider" gutterBottom>
-            Select Top results
-          </Typography>
-          <Slider
-            defaultValue={10}
-            getAriaValueText={valuetext}
-            aria-labelledby="discrete-slider"
-            valueLabelDisplay="auto"
-            step={10}
-            marks
-            min={5}
-            max={100}
-          />
-        </Grid>
-        <Grid item xs={'auto'} xl={'auto'} lg={'auto'} md={'auto'} sm={'auto'}>
-          <TextField
-            id='search'
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder='Search...'
-            variant='outlined'
-          >
-          </TextField>
-        </Grid>
-        <Grid item xs={'auto'} xl={'auto'} lg={'auto'} md={'auto'} sm={'auto'}>
-          <TextField
-            id='page'
-            value={currentPageNumber}
-            onChange={(e) => setCurrentPageNumber(e.target.value)}
-            placeholder='Pagenumber'
-            variant='outlined'
-            helperText="Page Number"
-          >
-          </TextField>
-        </Grid>
-      </Grid>
-      <Grid container justify='flex-start' direction='row' spacing={2}>
-        {articles !== null && articles !== undefined && articles.map((article, i) => (
-          <Grid item xs={12} xl={3} lg={5} md={4} sm={5} key={i} >
-            <Card className={classes.card}>
-              <CardActionArea >
-                {article.media[0] !== undefined && article.media[0].thumbnail !== undefined && <CardMedia
-                  className={classes.media}
-                  image={article.media[0].thumbnail}
-                  title={article.title}
-                />}
-                <CardContent >
-                  <Typography gutterBottom variant="h6" component="h4">
-                    {article.title}
-                  </Typography>
-
-                  {article.category.length > 0 && <Typography gutterBottom variant="body1">
-                    Categories : {article.category.map((cat, i) => i === article.category.length - 1 ? <span key={"cat" + i} >{cat}</span> : <span key={"cat" + i} >{cat},</span>)}
-                  </Typography>}
-
-                  <Typography gutterBottom variant="subtitle">
-                    Posted on {formatTime(article.date)}
-                  </Typography>
-                  <Typography variant="body2" color="textSecondary" component="p" dangerouslySetInnerHTML={{ __html: article.content }} >
-                  </Typography>
-                </CardContent>
-              </CardActionArea>
-              <CardActions className={classes.cardButton}>
-                {article.link === undefined || article.link === '' ? null :
-                  <a target="_blank" href={article.link.substring(0, 8) === 'https://' ? article.link : 'https://' + article.link} rel="noopener noreferrer">
-                    <Button size="small" color="primary"  >
-                      Learn More
-                    </Button>
-                  </a>
-                }
-                {/* <Fab color="primary" size="small" aria-label="add" className={classes.margin}>
-                  <EditIcon />
-                </Fab> */}
-                <IconButton aria-label="delete" color='primary' style={{ position: 'relative' }} onClick={() => handleClickOpen(article._id)}>
-                  <DeleteIcon />
-                </IconButton>
-                <Dialog
-                  open={open}
-                  onClose={handleClose}
-                  aria-labelledby="draggable-dialog-title"
-                >
-                  <DialogTitle style={{ cursor: 'move' }} id="draggable-dialog-title">
-                    Delete
-                  </DialogTitle>
-                  <DialogContent>
-                    <DialogContentText>
-                      Are you sure you want to delete this news
-                    </DialogContentText>
-                  </DialogContent>
-                  <DialogActions>
-                    <Button autoFocus onClick={handleClose} color="primary">
-                      Cancel
-                    </Button>
-                    <Button onClick={handleDelete} color="primary">
-                      Delete
-                    </Button>
-                  </DialogActions>
-                </Dialog>
-              </CardActions>
-            </Card>
+        <Grid container spacing={2}>
+          <Grid item xs={3}>
+            <TextField
+              id="standard-select-category"
+              select
+              label="Select"
+              value={category}
+              onChange={handleChange}
+              helperText="Select a region"
+              fullWidth
+            >
+              {categories.map(option => (
+                <MenuItem key={option} value={option}>
+                  {option}
+                </MenuItem>
+              ))}
+            </TextField>
           </Grid>
-        ))}
-      </Grid>
-    </Grid >
+          <Grid item xs={3}>
+            <Typography id="discrete-slider" gutterBottom>
+              No of results
+          </Typography>
+            <Slider
+              defaultValue={10}
+              getAriaValueText={valuetext}
+              aria-labelledby="discrete-slider"
+              valueLabelDisplay="auto"
+              step={10}
+              marks
+              min={5}
+              max={100}
+            />
+          </Grid>
+          <Grid item xs={3}>
+            <TextField
+              id='search'
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder='Search...'
+              variant='outlined'
+              fullWidth
+            >
+            </TextField>
+          </Grid>
+          <Grid item xs={3}>
+            <TextField
+              id='page'
+              value={currentPageNumber}
+              onChange={(e) => setCurrentPageNumber(e.target.value)}
+              placeholder='Pagenumber'
+              variant='outlined'
+              fullWidth
+              helperText="Page Number"
+            >
+            </TextField>
+          </Grid>
+        </Grid>
+        <Grid container justify='flex-start' direction='row' spacing={2} style={{ padding: "10px" }}>
+          {articles !== null && articles !== undefined && articles.map((article, i) => {
+            let cover = article.media.filter(m => m.isCover === true);
+            return (
+              <Grid item xs={12} xl={3} lg={5} md={4} sm={5} key={i} >
+                <Card className={classes.card}>
+                  <CardActionArea >
+                    {cover[0] !== undefined && cover[0].thumbnail !== undefined && <CardMedia
+                      className={classes.media}
+                      image={cover[0].thumbnail}
+                      title={article.title}
+                    />}
+                    <CardContent >
+                      <Typography gutterBottom variant="h6" component="h4">
+                        {article.title}
+                      </Typography>
+
+                      {article.category.length > 0 && <Typography gutterBottom variant="body1">
+                        Categories: {article.category.map((cat, i) => i === article.category.length - 1 ? <span key={"cat" + i} >{cat}</span> : <span key={"cat" + i} >{cat},</span>)}
+                      </Typography>}
+
+                      {article.region && <Typography gutterBottom variant="body1">
+                        Region: <strong>{TextHelper.titleCase(article.region)}</strong>
+                      </Typography>}
+
+                      <Typography gutterBottom variant="subtitle">
+                        Posted on {formatTime(article.date)}
+                      </Typography>
+
+                      <Typography variant="body2" color="textSecondary" component="p" dangerouslySetInnerHTML={{ __html: article.content }} />
+                    </CardContent>
+                  </CardActionArea>
+                  <CardActions className={classes.cardButton}>
+                    {article.link === undefined || article.link === '' ? null :
+                      <a target="_blank" href={article.link.substring(0, 8) === 'https://' ? article.link : 'https://' + article.link} rel="noopener noreferrer">
+                        <Button size="small" color="primary"  >
+                          Learn More
+                      </Button>
+                      </a>
+                    }
+                    <Button variant="outlined" aria-label="delete" color='secondary' style={{ position: 'relative' }} onClick={() => handleClickOpen(article._id)}>
+                      Delete
+                  </Button>
+                    <Dialog
+                      open={open}
+                      onClose={handleClose}
+                      aria-labelledby="draggable-dialog-title"
+                    >
+                      <DialogTitle style={{ cursor: 'move' }} id="draggable-dialog-title">
+                        Delete
+                    </DialogTitle>
+                      <DialogContent>
+                        <DialogContentText>
+                          Are you sure you want to delete this news
+                      </DialogContentText>
+                      </DialogContent>
+                      <DialogActions>
+                        <Button autoFocus onClick={handleClose} color="primary">
+                          Cancel
+                      </Button>
+                        <Button onClick={handleDelete} color="primary">
+                          Delete
+                      </Button>
+                      </DialogActions>
+                    </Dialog>
+                  </CardActions>
+                </Card>
+              </Grid>
+            );
+          })}
+        </Grid>
+      </Grid ></Container>
   );
 };

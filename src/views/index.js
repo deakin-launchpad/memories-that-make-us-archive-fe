@@ -8,6 +8,7 @@ import { Home } from './dependants/Home/Home';
 import { MobileMenu } from './dependants/mobileMenu/mobileMenu';
 import { Example } from './dependants/Example/Example';
 import { VideoStories } from "./dependants/VideoStories/VideoStories";
+import { VideoManagerScreen } from "./dependants/VideoManager/videoManager";
 
 export {
   Example,
@@ -16,5 +17,6 @@ export {
   Home,
   MobileMenu,
   FourOFour,
-  VideoStories
+  VideoStories,
+  VideoManagerScreen
 };

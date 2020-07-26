@@ -4,9 +4,18 @@
     {
       "name": "HOME",
       "type": "button",
-      "icon": "home",
+      "icon": "timeline",
       "controller": "/home",
-      "customTitle": "Memorie",
+      "customTitle": "Archieve",
+      "isFavourite": true,
+      "subMenuItems": []
+    },
+    {
+      "name": "Video Manager",
+      "type": "button",
+      "icon": "movie",
+      "controller": "/videoManager",
+      "customTitle": "",
       "isFavourite": true,
       "subMenuItems": []
     },
