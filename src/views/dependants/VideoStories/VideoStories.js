@@ -282,7 +282,7 @@ export const VideoStories = () => {
       }} />
     <Grid container spacing={1}>
       <Grid item xs={12}>
-        <Button onClick={() => {
+        <Button variant="contained" color="primary" onClick={() => {
           setCreationModalIsOpen(true);
         }
         }>Create Video Story</Button>

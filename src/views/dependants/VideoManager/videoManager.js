@@ -1,10 +1,14 @@
 import React from 'react';
 import { VideoManager } from "components";
+import { Container } from "@material-ui/core";
+
 
 export const VideoManagerScreen = () => {
 
   let manager = (
-    <VideoManager style={{ margin: "10px" }} />
+    <Container style={{ paddingTop: "10px" }}>
+      <VideoManager />
+    </Container>
   );
   return manager;
 };

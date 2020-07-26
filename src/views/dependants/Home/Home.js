@@ -1,18 +1,11 @@
-import React, { useEffect, useContext, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Grid, Typography, makeStyles, Card, CardActionArea, CardMedia, CardActions, CardContent, Button, TextField, MenuItem, Slider, Dialog, DialogTitle, Container, DialogContent, DialogContentText, DialogActions } from '@material-ui/core';
-
-import { HeaderElements } from 'components';
-import { LayoutContext } from 'contexts';
 import { API, TextHelper } from 'helpers/index';
 
 const useStyles = makeStyles({
   card: {
-    // maxWidth: 30,
-    maxHeight: 450,
     width: '100%',
     height: '100%',
-    margin: 16,
-    position: 'relative',
     overflow: 'auto'
   },
   media: {
@@ -33,7 +26,6 @@ function formatTime(time) {
 
 export const Home = () => {
   const classes = useStyles();
-  const { setHeaderElements, pageTitle } = useContext(LayoutContext);
   const [articles, setArticles] = useState();
   const [categories, setCategories] = useState(['All']);
   const [category, setCategory] = useState('');
@@ -112,15 +104,9 @@ export const Home = () => {
   const handleChange = event => {
     setCategory(event.target.value);
   };
-  useEffect(() => {
-    setHeaderElements(<HeaderElements>
-      <Typography>
-        {pageTitle}
-      </Typography>
-    </HeaderElements>);
-  }, [pageTitle, setHeaderElements]);
   return (
     <Container >
+      
       <Grid container justify='flex-start' direction='row' alignItems="space-between" style={{ padding: "10px" }}>
         <Grid item xs={12} xl={12} lg={12} md={12} sm={12}  >
           <Typography variant="h4">Archieve</Typography>
@@ -235,7 +221,7 @@ export const Home = () => {
                     </DialogTitle>
                       <DialogContent>
                         <DialogContentText>
-                          Are you sure you want to delete this news
+                          Are you sure you want to delete this memory
                       </DialogContentText>
                       </DialogContent>
                       <DialogActions>

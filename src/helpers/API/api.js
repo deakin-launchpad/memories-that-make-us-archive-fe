@@ -90,12 +90,13 @@ class API {
     performCallback(callback);
   }
 
-  createNews = (data) => {
+  createNews = (data, callback) => {
     axiosInstance.post('/memory/createMemory', data, {
       headers: {
         authorization: 'Bearer ' + AccessToken
       }
     }).then(() => {
+      performCallback(callback);
       notify("Memory Created");
     }).catch(error => {
       errorHelper(error);
@@ -302,9 +303,56 @@ class API {
         authorization: 'Bearer ' + AccessToken
       },
     }).then(() => {
-      notify("News Deleted");
+      notify("Video Deleted");
       callback(true);
     }).catch(error => {
+      errorHelper(error);
+    });
+  }
+
+  getMemoryWalks = (callback) => {
+    return axiosInstance.get('memoryWalk/getAllMemoryWalks').then((response) => {
+      performCallback(callback, response.data.data);
+    }).catch(error => {
+      errorHelper(error);
+    });
+  }
+
+
+  deleteMemoryWalk = (id, callback) => {
+    return axiosInstance.delete(`memoryWalk/deleteMemoryWalk/${id}`, {
+      headers: {
+        authorization: 'Bearer ' + AccessToken
+      },
+    }).then((response) => {
+      performCallback(callback, response.data.data);
+    }).catch(error => {
+      errorHelper(error);
+    });
+  }
+
+  createMemoryWalk = (data, callback) => {
+    return axiosInstance.post(`memoryWalk/createMemoryWalk`, data, {
+      headers: {
+        authorization: 'Bearer ' + AccessToken
+      },
+    }).then((response) => {
+      performCallback(callback, response.data.data);
+    }).catch(error => {
+      performCallback(callback, { error: true });
+      errorHelper(error);
+    });
+  }
+
+  updateMemoryWalk = (data, callback) => {
+    return axiosInstance.put(`memoryWalk/updateMemoryWalk/${data.id}`, data.data, {
+      headers: {
+        authorization: 'Bearer ' + AccessToken
+      },
+    }).then((response) => {
+      performCallback(callback, response.data.data);
+    }).catch(error => {
+      performCallback(callback, { error: true });
       errorHelper(error);
     });
   }

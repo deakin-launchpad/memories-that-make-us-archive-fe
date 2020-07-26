@@ -2,11 +2,38 @@
   "landingPage": "/home",
   "menuItems": [
     {
-      "name": "HOME",
+      "name": "Archive",
       "type": "button",
-      "icon": "timeline",
+      "icon": "archive",
       "controller": "/home",
       "customTitle": "Archieve",
+      "isFavourite": true,
+      "subMenuItems": []
+    },
+    {
+      "name": "Create Memory",
+      "type": "button",
+      "icon": "cake",
+      "controller": "/examples",
+      "customTitle": "Create Memory for archieve",
+      "isFavourite": true,
+      "subMenuItems": []
+    },
+    {
+      "name": "Video Stories",
+      "type": "button",
+      "icon": "tv",
+      "controller": "/videoStories",
+      "customTitle": "Video Stories",
+      "isFavourite": true,
+      "subMenuItems": []
+    },
+    {
+      "name": "Memory Walk",
+      "type": "button",
+      "icon": "directions_walk",
+      "controller": "/memoryWalk",
+      "customTitle": "Memory Walk",
       "isFavourite": true,
       "subMenuItems": []
     },
@@ -15,26 +42,8 @@
       "type": "button",
       "icon": "movie",
       "controller": "/videoManager",
-      "customTitle": "",
-      "isFavourite": true,
-      "subMenuItems": []
-    },
-    {
-      "name": "Memories",
-      "type": "button",
-      "icon": "code",
-      "controller": "/examples",
-      "customTitle": "Publish",
-      "isFavourite": true,
-      "subMenuItems": []
-    },
-    {
-      "name": "Video Stories",
-      "type": "button",
-      "icon": "code",
-      "controller": "/videoStories",
-      "customTitle": "Publish",
-      "isFavourite": true,
+      "customTitle": "Video Manager",
+      "isFavourite": false,
       "subMenuItems": []
     },
     {
@@ -42,7 +51,7 @@
       "type": "logout",
       "icon": "logout",
       "controller": "",
-      "customTitle": "LPAD News",
+      "customTitle": "memories",
       "isFavourite": false,
       "subMenuItems": []
     }
@@ -56,9 +65,9 @@
   },
   "bottomMobileNavigation": true,
   "displayMobileMenuHam": true,
-  "menuButtonLabel": "Menu",
+  "menuButtonLabel": "Extras",
   "sideMenu": {
-    "permanent": false,
+    "permanent": true,
     "default": "open"
   },
   "theme": {

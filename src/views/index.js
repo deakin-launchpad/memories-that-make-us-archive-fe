@@ -9,6 +9,7 @@ import { MobileMenu } from './dependants/mobileMenu/mobileMenu';
 import { Example } from './dependants/Example/Example';
 import { VideoStories } from "./dependants/VideoStories/VideoStories";
 import { VideoManagerScreen } from "./dependants/VideoManager/videoManager";
+import { MemoryWalk } from "./dependants/MemoryWalk/MemoryWalk";
 
 export {
   Example,
@@ -18,5 +19,6 @@ export {
   MobileMenu,
   FourOFour,
   VideoStories,
-  VideoManagerScreen
+  VideoManagerScreen,
+  MemoryWalk
 };

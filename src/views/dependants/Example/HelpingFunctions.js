@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import moment from 'moment-timezone';
 import {
   Card, CardHeader, Avatar, CardActions, CardContent, Typography, Grid, Button, Divider, TextField, InputAdornment, IconButton, Box, InputLabel,
@@ -102,7 +102,7 @@ const uploadMedia = (files, callback) => {
 };
 
 
-export const CreatePost = (props) => {
+export const CreatePost = withRouter((props) => {
   const [postData, setPostData] = useState("");
   const [categories, setCategories] = useState("");
   const [date, setDate] = useState("");
@@ -191,6 +191,8 @@ export const CreatePost = (props) => {
         resetPoster();
         if (props.reload instanceof Function)
           props.reload();
+        props.history.replace("/home");
+
       });
     };
     if (postData && content) {
@@ -285,18 +287,6 @@ export const CreatePost = (props) => {
                       <i className="material-icons">local_see</i>
                     </IconButton>
                   </InputAdornment>
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      edge="end"
-                      color='secondary'
-                      onClick={() => {
-                        uploadPost();
-                      }}
-                    >
-                      <i className="material-icons">send</i>
-                    </IconButton>
-                  </InputAdornment>
                 </>,
             }} />
         </Grid>
@@ -324,8 +314,8 @@ export const CreatePost = (props) => {
             value={date}
             onChange={(e) => { setDate(e.target.value); }}
             variant={'outlined'}
-            placeholder="Date (DD/MM/YYYY)"
-            hint="09/09/2020"
+            placeholder="Date (MM/DD/YYYY)"
+            hint="02/26/2020"
             color='primary' />
         </Grid>
         <Grid item xs={12} md={8}>
@@ -423,11 +413,18 @@ export const CreatePost = (props) => {
               }} />
           </Box>
         </Grid>
+        <Grid item xs={12} md={8}>
+          <Button fullWidth onClick={() => {
+            uploadPost();
+          }} color="primary" variant="contained">
+            Create
+          </Button>
+        </Grid>
 
       </Grid>
     </CardContent>
   </Card >);
-};
+});
 
 CreatePost.propTypes = {
   userName: PropTypes.string,

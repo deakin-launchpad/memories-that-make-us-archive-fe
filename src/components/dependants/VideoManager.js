@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import PropTypes from "prop-types";
 import { UploadManagerContext } from "contexts";
 import { Grid, Card, CardMedia, CardActions, Button, Divider, CardHeader } from "@material-ui/core";
@@ -65,8 +65,10 @@ MediaCard.propTypes = {
 
 
 export const VideoManager = props => {
-  const { media, setMedia } = useContext(UploadManagerContext);
-
+  const { media, setMedia, updateMedia } = useContext(UploadManagerContext);
+  useEffect(() => {
+    updateMedia();
+  }, [updateMedia]);
   let videoManager = (<><Grid container style={{ padding: "10px", position: "sticky", top: props.top === undefined ? "56px" : props.top, background: "white", zIndex: 99 }} spacing={1}>
     <Grid item xs={6}>
       <Button variant="outlined" fullWidth onClick={() => {
@@ -78,9 +80,7 @@ export const VideoManager = props => {
             let formData = new FormData();
             formData.append('videoFile', e.target.files[0]);
             API.uploadLargeVideo(formData, () => {
-              API.getMediaFiles((response) => {
-                setMedia(response);
-              });
+              updateMedia();
             }, {
               onUploadProgress: (progressPercent) => {
                 if (progressPercent === 100) {
@@ -102,23 +102,16 @@ export const VideoManager = props => {
     </Grid><Grid item xs={6}>
       <Button fullWidth variant="outlined" onClick={() => {
         setMedia(undefined);
-        API.getMediaFiles((response) => {
-          setMedia(response);
-        });
+        updateMedia();
       }}>
         Refresh
       </Button>
     </Grid>
-  </Grid>
-
-  {
-    media === undefined ? <LoadingScreen /> : media.length > 0 ? <Grid container style={{ padding: "10px" }} spacing={1}>
-      {media.map((m, i) => <Grid key={"item_" + i} item xs={12} sm={12} lg={4} md={4} xl={4}>
-        <MediaCard link={m.link} type={m.type} isUploaded={m.isUploaded} id={m._id} setMedia={setMedia} resolution={m.resolution} onSelect={props.onSelect} thumb={m.thumb} />
-      </Grid>)}
-    </Grid> : <div style={{ textAlign: "center", paddingTop: "30px" }}> No Media Avaialble</div>
-  }
-
+  </Grid>{media === undefined ? <LoadingScreen /> : media.length > 0 ? <Grid container style={{ padding: "10px" }} spacing={1}>
+    {media.map((m, i) => <Grid key={"item_" + i} item xs={12} sm={12} lg={4} md={4} xl={4}>
+      <MediaCard link={m.link} type={m.type} isUploaded={m.isUploaded} id={m._id} setMedia={setMedia} resolution={m.resolution} onSelect={props.onSelect} thumb={m.thumb} />
+    </Grid>)}
+  </Grid> : <div style={{ textAlign: "center", paddingTop: "30px" }}> No Media Avaialble</div>}
   </>);
   return videoManager;
 };
