@@ -33,7 +33,6 @@ export const Home = () => {
   const [open, setOpen] = React.useState(false);
   // const [bottomDrawerStatus, setBottomDrawerStatus] = useState(false);
   const [selectedNewsId, setSelectedNewsId] = useState('');
-  const [search, setSearch] = useState('');
   const [currentPageNumber, setCurrentPageNumber] = useState(1);
   // const [drawerContent, setDrawerContent] = useState('');
   useEffect(() => {
@@ -49,26 +48,18 @@ export const Home = () => {
   }, [category, numberOfRecords, currentPageNumber]);
 
   useEffect(() => {
-    if (search !== '') {
-      if (currentPageNumber === '') {
-        API.getNewsBySearch({ title: search, numberOfRecords: numberOfRecords, currentPageNumber: 1 }, setArticles);
-      }
-      else {
-        API.getNewsBySearch({ title: search, numberOfRecords: numberOfRecords, currentPageNumber: currentPageNumber }, setArticles);
-      }
+
+    if (category === 'All') {
+      setCategory('');
+    }
+    if (currentPageNumber === '') {
+      API.getNews({ numberOfRecords: numberOfRecords, currentPageNumber: 1 }, setArticles);
     }
     else {
-      if (category === 'All') {
-        setCategory('');
-      }
-      if (currentPageNumber === '') {
-        API.getNews({ numberOfRecords: numberOfRecords, currentPageNumber: 1 }, setArticles);
-      }
-      else {
-        API.getNews({ numberOfRecords: numberOfRecords, currentPageNumber: currentPageNumber }, setArticles);
-      }
+      API.getNews({ numberOfRecords: numberOfRecords, currentPageNumber: currentPageNumber }, setArticles);
     }
-  }, [search, category, numberOfRecords, currentPageNumber]);
+
+  }, [category, numberOfRecords, currentPageNumber]);
   const handleClickOpen = (data) => {
     setSelectedNewsId(data);
     setOpen(true);
@@ -143,17 +134,6 @@ export const Home = () => {
               min={5}
               max={100}
             />
-          </Grid>
-          <Grid item xs={3}>
-            <TextField
-              id='search'
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder='Search...'
-              variant='outlined'
-              fullWidth
-            >
-            </TextField>
           </Grid>
           <Grid item xs={3}>
             <TextField
