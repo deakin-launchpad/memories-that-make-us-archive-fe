@@ -193,13 +193,13 @@ const MemoryWalkCard = (props) => {
       />
       <CardContent>
         <Grid container spacing={1}>
-          {props.content && <Grid item xs={12}>
+          {props.description && <Grid item xs={12}>
             <strong>Description:</strong> {props.description}
           </Grid>}
           {props.content && < Grid item xs={12}>
             <strong>Content:</strong> {props.content}
           </Grid>}
-          {props.content && < Grid item xs={12}>
+          {props.url && < Grid item xs={12}>
             <strong>Url:</strong> {props.url}
           </Grid>}
         </Grid>
