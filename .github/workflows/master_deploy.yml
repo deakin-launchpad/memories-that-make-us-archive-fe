@@ -1,4 +1,4 @@
-name: Docker Image CI
+name: Deployment fe
 on:
   push:
     branches:
@@ -6,11 +6,25 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [12.x]
     steps:
     - uses: actions/checkout@v1
-    - name: Login to DockerHub
-      run:  echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
-    - name: Build the Docker image
-      run:  docker build -t ${{ secrets.DOCKER_USERNAME }}/memories-that-make-us-archive-fe:${GITHUB_SHA::8} .
-    - name: Publish to Docker Hub
-      run:  docker push ${{ secrets.DOCKER_USERNAME }}/memories-that-make-us-archive-fe:${GITHUB_SHA::8}
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: Install Packages
+      run: npm install
+    - name: Build page
+      run: npm run build
+    - name: Deploy
+      uses: citizen-of-planet-earth/cf-cli-action@master
+      with:
+        cf_api: https://api.au-syd.cf.cloud.ibm.com
+        cf_username: ${{ secrets.CF_USER }}
+        cf_password: ${{ secrets.CF_PASSWORD }}
+        cf_org: lpad-seamless
+        cf_space: prod 
+        command: push -f manifest.yml
