@@ -246,7 +246,7 @@ const MemoryWalkCard = (props) => {
         closeButtonName: "Close"
       }} />
       <CardHeader title={TextHelper.titleCase(props.title)}
-        subheader={<Typography variant="subtitle"><strong>Date:</strong> {TextHelper.formatTime(props.date)}</Typography>}
+        subheader={<Typography variant="subtitle1"><strong>Date:</strong> {TextHelper.formatTime(props.date)}</Typography>}
         action={<IconButton onClick={(e) => {
           handleMenuClick(e);
         }} aria-label="settings">

@@ -31,7 +31,7 @@ export const EnhancedModal = (props) => {
   useEffect(() => {
     if (props.isOpen) {
       setIsOpen(true);
-    } else if (props.isOpen) {
+    } else {
       setIsOpen(false);
     }
   }, [props.isOpen]);

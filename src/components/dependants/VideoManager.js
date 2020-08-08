@@ -11,8 +11,8 @@ const MediaCard = props => {
 
   const renderMedia = () => {
     if (!isUploaded) {
-      return <center style={{ textAlign: "center" }}>
-        <LoadingScreen />
+      return <center style={{ textAlign: "center", marginTop: "10%", marginBottom: "10%" }}>
+        <LoadingScreen loadingText={"Video is being processed."} />
       </center>;
     }
     switch (String(type).toLowerCase()) {
