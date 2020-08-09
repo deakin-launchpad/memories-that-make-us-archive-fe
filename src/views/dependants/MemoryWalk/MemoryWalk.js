@@ -15,8 +15,12 @@ const CreateMemoryCard = (props) => {
   const [content, setContent] = useState("");
   const [url, setUrl] = useState("");
   const [date, setDate] = useState("");
+  const [secondTitle, setSecondTitle] = useState("");
+  const [secondUrl, setSecondUrl] = useState("");
+  const [secondDescription, setSecondDescription] = useState("");
 
   const [videoManagerIsOpen, setVideoManagerIsOpen] = useState(false);
+  const [isItUrl2, setIsItUrl2] = useState(false);
 
   const throwError = (message) => {
     props.setCreateModalIsOpen(false);
@@ -28,6 +32,10 @@ const CreateMemoryCard = (props) => {
       dialogTitle="Video Manager"
       dialogContent={<VideoManager top={0} onSelect={(videoData) => {
         setVideoManagerIsOpen(false);
+        if (isItUrl2) {
+          setSecondUrl(videoData.link);
+          return setIsItUrl2(false);
+        }
         setUrl(videoData.link);
       }} />}
       options={{
@@ -75,7 +83,36 @@ const CreateMemoryCard = (props) => {
         </InputAdornment>
       }} />
     </Grid>
-
+    <Grid item xs={12}>
+      <TextField label="Second Title" multiline fullWidth={true} variant="outlined" defaultValue={secondTitle}
+        value={secondTitle} onChange={(e) => {
+          setSecondTitle(e.target.value);
+        }} />
+    </Grid>
+    <Grid item xs={12}>
+      <TextField label="Second Description" multiline fullWidth={true} variant="outlined" defaultValue={secondDescription}
+        value={secondDescription} onChange={(e) => {
+          setSecondDescription(e.target.value);
+        }} />
+    </Grid>
+    <Grid item xs={12}>
+      <TextField label="Second Url" fullWidth={true} variant="outlined" defaultValue={secondUrl} value={secondUrl} onChange={(e) => {
+        setSecondUrl(e.target.value);
+      }} InputProps={{
+        endAdornment: <InputAdornment position="end" onClick={() => {
+          setIsItUrl2(true);
+          setVideoManagerIsOpen(true);
+        }}>
+          <IconButton
+            aria-label="toggle password visibility"
+            edge="end"
+            color='primary'
+          >
+            <i className="material-icons">publish</i>
+          </IconButton>
+        </InputAdornment>
+      }} />
+    </Grid>
   </Grid>);
 
   return (<EnhancedModal isOpen={props.createModalIsOpen} dialogTitle="Create Memory Walk" dialogContent={modalContent} options={{
@@ -95,6 +132,12 @@ const CreateMemoryCard = (props) => {
         dataToSend.content = content;
       if (url !== "")
         dataToSend.url = url;
+      if (secondTitle !== "")
+        dataToSend.secondTitle = secondTitle;
+      if (secondDescription !== "")
+        dataToSend.secondDescription = secondDescription;
+      if (secondUrl !== "")
+        dataToSend.secondUrl = secondUrl;
       API.createMemoryWalk(dataToSend, (response) => {
         if (response.error) props.setCreateModalIsOpen(false);
         props.getMemoryWalks();
@@ -122,6 +165,12 @@ const MemoryWalkCard = (props) => {
   const [content, setContent] = useState(props.content);
   const [url, setUrl] = useState(props.url);
   const [date, setDate] = useState(props.date);
+
+  const [secondTitle, setSecondTitle] = useState(props.secondTitle);
+  const [secondUrl, setSecondUrl] = useState(props.secondUrl);
+  const [secondDescription, setSecondDescription] = useState(props.secondDescription);
+  const [isItUrl2, setIsItUrl2] = useState(false);
+
 
   const [menuAnchor, setMenuAnchor] = useState(null);
   const [editModalIsOpen, setEditModalIsOpen] = useState(false);
@@ -173,7 +222,36 @@ const MemoryWalkCard = (props) => {
         </InputAdornment>
       }} />
     </Grid>
-
+    <Grid item xs={12}>
+      <TextField label="Second Title" multiline fullWidth={true} variant="outlined" defaultValue={secondTitle}
+        value={secondTitle} onChange={(e) => {
+          setSecondTitle(e.target.value);
+        }} />
+    </Grid>
+    <Grid item xs={12}>
+      <TextField label="Second Description" multiline fullWidth={true} variant="outlined" defaultValue={secondDescription}
+        value={secondDescription} onChange={(e) => {
+          setSecondDescription(e.target.value);
+        }} />
+    </Grid>
+    <Grid item xs={12}>
+      <TextField label="Second Url" fullWidth={true} variant="outlined" defaultValue={secondUrl} value={secondUrl} onChange={(e) => {
+        setSecondUrl(e.target.value);
+      }} InputProps={{
+        endAdornment: <InputAdornment position="end" onClick={() => {
+          setIsItUrl2(true);
+          setVideoManagerIsOpen(true);
+        }}>
+          <IconButton
+            aria-label="toggle password visibility"
+            edge="end"
+            color='primary'
+          >
+            <i className="material-icons">publish</i>
+          </IconButton>
+        </InputAdornment>
+      }} />
+    </Grid>
   </Grid>);
 
   let menu = (<Menu
@@ -207,6 +285,10 @@ const MemoryWalkCard = (props) => {
         dialogTitle="Video Manager"
         dialogContent={<VideoManager top={0} onSelect={(videoData) => {
           setVideoManagerIsOpen(false);
+          if (isItUrl2) {
+            setSecondUrl(videoData.link);
+            return setIsItUrl2(false);
+          }
           setUrl(videoData.link);
         }} />}
         options={{
@@ -233,6 +315,12 @@ const MemoryWalkCard = (props) => {
             dataToSend.content = content;
           if (url !== "")
             dataToSend.url = url;
+          if (secondTitle !== "")
+            dataToSend.secondTitle = secondTitle;
+          if (secondDescription !== "")
+            dataToSend.secondDescription = secondDescription;
+          if (secondUrl !== "")
+            dataToSend.secondUrl = secondUrl;
           API.updateMemoryWalk({ id: props.id, data: dataToSend }, (response) => {
             if (response.error) setEditModalIsOpen(false);
             setEditModalIsOpen(false);
@@ -246,7 +334,7 @@ const MemoryWalkCard = (props) => {
         closeButtonName: "Close"
       }} />
       <CardHeader title={TextHelper.titleCase(props.title)}
-        subheader={<Typography variant="subtitle"><strong>Date:</strong> {TextHelper.formatTime(props.date)}</Typography>}
+        subheader={<Typography variant="subtitle1"><strong>Date:</strong> {TextHelper.formatTime(props.date)}</Typography>}
         action={<IconButton onClick={(e) => {
           handleMenuClick(e);
         }} aria-label="settings">
@@ -263,6 +351,15 @@ const MemoryWalkCard = (props) => {
           </Grid>}
           {props.url && < Grid item xs={12}>
             <strong>Url:</strong> {props.url}
+          </Grid>}
+          {props.secondTitle && <Grid item xs={12}>
+            <strong>Second Title:</strong> {props.secondTitle}
+          </Grid>}
+          {props.secondDescription && < Grid item xs={12}>
+            <strong>Second Description:</strong> {props.secondDescription}
+          </Grid>}
+          {props.secondUrl && < Grid item xs={12}>
+            <strong>SecondUrl:</strong> {props.secondUrl}
           </Grid>}
         </Grid>
       </CardContent>
@@ -302,12 +399,8 @@ export const MemoryWalk = () => {
         {
           memoryWalks.map((item, i) => <Grid item xs={12} sm={12} lg={4} md={4} xl={4} key={"memory_" + i}>
             <MemoryWalkCard
-              title={item.title}
-              description={item.description}
-              date={item.date}
               id={item._id}
-              content={item.content}
-              url={item.url}
+              {...item}
               getMemoryWalks={getMemoryWalks}
               memoryWalkUndefined={() => {
                 setMemoryWalks(undefined);

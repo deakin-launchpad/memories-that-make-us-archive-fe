@@ -97,8 +97,7 @@ export const Home = () => {
   };
   return (
     <Container >
-
-      <Grid container justify='flex-start' direction='row' alignItems="space-between" style={{ padding: "10px" }}>
+      <Grid container justify='flex-start' direction='row'  style={{ padding: "10px" }}>
         <Grid item xs={12} xl={12} lg={12} md={12} sm={12}  >
           <Typography variant="h4">Archieve</Typography>
         </Grid>
@@ -176,7 +175,7 @@ export const Home = () => {
                         Region: <strong>{TextHelper.titleCase(article.region)}</strong>
                       </Typography>}
 
-                      <Typography gutterBottom variant="subtitle">
+                      <Typography gutterBottom variant="subtitle1">
                         Posted on {formatTime(article.date)}
                       </Typography>
 
