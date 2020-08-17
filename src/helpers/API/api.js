@@ -310,6 +310,20 @@ class API {
     });
   }
 
+  updateMediaTitle = (data, callback) => {
+    axiosInstance.put('/upload/updateTitle/' + data._id, {
+      title: data.title
+    }, {
+      headers: {
+        authorization: 'Bearer ' + AccessToken
+      },
+    }).then(() => {
+      callback(true);
+    }).catch(error => {
+      errorHelper(error);
+    });
+  }
+
   getMemoryWalks = (callback) => {
     return axiosInstance.get('memoryWalk/getAllMemoryWalks').then((response) => {
       performCallback(callback, response.data.data);
